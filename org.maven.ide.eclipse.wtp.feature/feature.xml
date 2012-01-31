@@ -2,7 +2,7 @@
 <feature
       id="org.maven.ide.eclipse.wtp.feature"
       label="%featureName"
-      version="0.15.0.20120131-2010"
+      version="0.15.1.qualifier"
       provider-name="%providerName"
       plugin="org.maven.ide.eclipse.wtp">
 
