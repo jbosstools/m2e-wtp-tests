@@ -18,7 +18,7 @@
   <artifactId>org.eclipse.m2e.wtp.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 
-  <name>Maven Integration for Eclipse WTP feature</name>
+  <name>M2E-WTP :: Feature</name>
   <!--
   <build>
     <plugins>

@@ -18,7 +18,7 @@
   <artifactId>org.eclipse.m2e.wtp.site</artifactId>
   <packaging>eclipse-update-site</packaging>
 
-  <name>Maven Integration for Eclipse WTP Site</name>
+  <name>M2E-WTP :: Update Site</name>
 
   <build>
     <plugins>

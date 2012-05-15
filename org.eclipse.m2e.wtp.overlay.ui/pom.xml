@@ -18,6 +18,6 @@
   <artifactId>org.eclipse.m2e.wtp.overlay.ui</artifactId>
   <packaging>eclipse-plugin</packaging>
 
-  <name>UI Overlay support for Eclipse WTP plugin</name>
+  <name>M2E-WTP :: Overlay UI</name>
 
 </project>

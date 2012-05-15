@@ -16,7 +16,7 @@
 	<artifactId>org.eclipse.m2e.wtp</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<name>Maven Integration for Eclipse WTP plugin</name>
+	<name>M2E-WTP :: Core</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>

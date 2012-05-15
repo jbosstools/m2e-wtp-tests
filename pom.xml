@@ -21,7 +21,7 @@
   <version>0.16.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Maven Integration for Eclipse WTP (Parent)</name>
+  <name>M2E-WTP :: Parent</name>
 
   <properties>
     <tycho-version>0.14.1</tycho-version>
@@ -38,8 +38,6 @@
     <module>org.eclipse.m2e.wtp.overlay</module>
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
-    <module>org.eclipse.m2e.wtp.common.tests</module>
-    <module>org.eclipse.m2e.wtp.tests</module>
     <module>org.eclipse.m2e.wtp.feature</module>
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>

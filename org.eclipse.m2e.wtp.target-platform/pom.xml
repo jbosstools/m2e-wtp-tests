@@ -18,7 +18,7 @@
   <artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
   <packaging>pom</packaging>
 
-  <name>Maven Integration for Eclipse WTP Target platform</name>
+  <name>M2E-WTP :: Target Platform</name>
 
   <build>
     <plugins>
