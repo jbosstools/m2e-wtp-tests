@@ -24,6 +24,9 @@
         </properties>
     </profile>
   </profiles>
+        <properties>
+        	<db.username>fred</db.username>
+        </properties>
 
   <activeProfiles>
     <activeProfile>test</activeProfile>

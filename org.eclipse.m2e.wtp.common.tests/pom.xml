@@ -9,7 +9,7 @@
 
 	<parent>
 		<groupId>org.eclipse.m2e.wtp</groupId>
-		<artifactId>org.eclipse.m2e.wtp.parent</artifactId>
+		<artifactId>org.eclipse.m2e.wtp.tests.parent</artifactId>
 		<version>0.16.0-SNAPSHOT</version>
 	</parent>
 
@@ -18,6 +18,9 @@
 
 	<name>Test framework for WTP related plugins</name>
 
+	<!--  can't use maven dependencies for eclipse-plugin. Instead we depend on commons-io
+	being installed from http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/
+	
 	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -25,4 +28,5 @@
 			<version>2.0.1</version>
 		</dependency>
 	</dependencies>
+	-->
 </project>
