@@ -122,10 +122,9 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   public void testMECLIPSEWTP205_useWorkDirectory() throws Exception {
     IProject project = importProject("projects/MECLIPSEWTP-205/pom.xml");
     project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
     waitForJobsToComplete();
     assertNoErrors(project);
-    project.getFolder("target").refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+    project.getFolder("target").refreshLocal(IResource.DEPTH_INFINITE, monitor);
     waitForJobsToComplete();
 
     IFile applicationXml = project.getFile("target/m2e-wtp/ear-resources/META-INF/application.xml");
@@ -137,7 +136,6 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void testMECLIPSEWTP161_RemoveOldSourcePaths() throws Exception {
     IProject ear = importProject("projects/MECLIPSEWTP-161/pom.xml");
-    waitForJobsToComplete();
     ear.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
     waitForJobsToComplete();
     assertNoErrors(ear);
@@ -2039,6 +2037,12 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals(JavaFacet.VERSION_1_5, jarFp.getProjectFacetVersion(JavaFacet.FACET));
   }
 
+  public void test384011_outsideResources() throws Exception {
+	 IProject project = importProject("projects/384011/war/pom.xml");
+	 waitForJobsToComplete();
+	 assertNoErrors(project);
+  }
+  
   private static String dumpModules(List<Module> modules) {
     if(modules == null)
       return "Null modules";
