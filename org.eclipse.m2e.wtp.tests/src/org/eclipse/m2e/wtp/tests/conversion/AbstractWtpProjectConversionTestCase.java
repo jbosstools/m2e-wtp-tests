@@ -115,7 +115,12 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
     //Checks the Maven project builds without errors
     project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
     waitForJobsToComplete();
-    assertNoErrors(project);
+    checkForErrors(project);
   }
+  
+  protected void checkForErrors(IProject project) throws CoreException {
+	    assertNoErrors(project);
+  }
+	  
 
 }
