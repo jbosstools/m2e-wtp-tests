@@ -77,6 +77,12 @@
       <url>http://download.jboss.org/jbosstools/updates/requirements/m2eclipse/m2e-wtp-indigo/</url>
     </repository>    
     <repository>
+      <id>orbit</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/</url>
+    </repository>    
+
+    <repository>
       <id>RSO-public-group</id>
       <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
       <releases>
@@ -128,7 +134,7 @@
               <include>**/*Test.java</include>
             </includes>
             <argLine>${tycho.test.jvmArgs}</argLine>
-            <appArgLine>-pluginCustomization ${basedir}/plugin_customization.ini</appArgLine>
+            <appArgLine>-pluginCustomization "${basedir}/plugin_customization.ini"</appArgLine>
             <!-- kill test JVM if tests take more than X seconds to finish -->
             <forkedProcessTimeoutInSeconds>${test.timeout}</forkedProcessTimeoutInSeconds>
           </configuration>
