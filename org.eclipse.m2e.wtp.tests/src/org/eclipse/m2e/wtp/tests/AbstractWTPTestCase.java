@@ -156,7 +156,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     String content = null;
     try {
       ins = file.getContents();
-      content = IOUtil.toString(ins, 1024);
+      content = IOUtil.toString(ins, 1024).replaceAll("\r\n", "\n");
     } finally {
       IOUtil.close(ins);   
     }

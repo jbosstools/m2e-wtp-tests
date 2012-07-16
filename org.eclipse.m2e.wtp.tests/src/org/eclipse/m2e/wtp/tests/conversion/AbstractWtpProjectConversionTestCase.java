@@ -121,6 +121,5 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
   protected void checkForErrors(IProject project) throws CoreException {
 	    assertNoErrors(project);
   }
-	  
 
 }
