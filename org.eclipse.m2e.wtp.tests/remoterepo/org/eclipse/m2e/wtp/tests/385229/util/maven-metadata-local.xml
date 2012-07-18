@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.m2e.wtp.tests.385229</groupId>
+  <artifactId>util</artifactId>
+  <versioning>
+    <versions>
+      <version>0.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20120718091849</lastUpdated>
+  </versioning>
+</metadata>

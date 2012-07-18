@@ -14,7 +14,9 @@ import static org.eclipse.m2e.wtp.MavenWtpConstants.M2E_WTP_FOLDER;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -2041,6 +2043,31 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 	 IProject project = importProject("projects/384011/war/pom.xml");
 	 waitForJobsToComplete();
 	 assertNoErrors(project);
+  }
+  
+  public void test385229_removeStaleReference() throws Exception {
+    IProject[] projects = importProjects("projects/385229/parent", //
+            new String[] {"pom.xml",  "util/pom.xml", "war/pom.xml"}, new ResolverConfiguration());
+    
+    waitForJobsToComplete();
+    IProject util = projects[1];
+    IProject war = projects[2];
+    
+    assertNoErrors(war);
+    assertNoErrors(util);
+    
+    IVirtualComponent warComp = ComponentCore.createComponent(war);
+    Map<String, Object> options = new HashMap<String, Object>(1);
+    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, IVirtualComponent.DISPLAYABLE_REFERENCES_ALL);
+    IVirtualReference[] refs = warComp.getReferences(options);
+    assertEquals(1, refs.length);
+    
+    util.close(monitor);
+    waitForJobsToComplete();
+    assertNoErrors(war);
+    
+    refs = warComp.getReferences(options);
+    assertEquals("util project reference was not removed", 0, refs.length);
   }
   
   private static String dumpModules(List<Module> modules) {
