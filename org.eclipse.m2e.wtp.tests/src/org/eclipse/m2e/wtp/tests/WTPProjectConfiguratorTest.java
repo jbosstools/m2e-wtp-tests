@@ -350,12 +350,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals(IJ2EEFacetConstants.EJB_30, facetedProject.getInstalledVersion(EJB_FACET));
 
     IFolder ejbModuleFolder = project.getFolder("ejbModule");
-    assertTrue(ejbModuleFolder.exists());
-
-    //ejb-jar file should not have been created in the custom resources directory, as it's not mandatory according to the Java EE 5 specs
-    IFile ejbJar = project.getFile("ejbModule/META-INF/ejb-jar.xml");
-    assertFalse(ejbJar.exists());
-    //TODO check DTD
+    assertFalse(ejbModuleFolder.exists());
   }
 
   @Test
@@ -1202,13 +1197,11 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     {
       IJavaProject ejbProject = JavaCore.create(ejb);
       IClasspathEntry[] rawClasspath = ejbProject.getRawClasspath();
-      assertEquals(Arrays.toString(rawClasspath), 5, rawClasspath.length);
+      assertEquals(Arrays.toString(rawClasspath), 4, rawClasspath.length);
       assertEquals("/MNGECLIPSE-1878-ejb/src/main/java", rawClasspath[0].getPath().toString());
       assertEquals("/MNGECLIPSE-1878-ejb/src/test/java", rawClasspath[1].getPath().toString());
-      //TODO Resources folder appear after config update (WTP added MANIFEST.MF)
-      assertEquals("/MNGECLIPSE-1878-ejb/src/main/resources", rawClasspath[2].getPath().toString());
-      assertEquals(JRE_CONTAINER_J2SE_1_5, rawClasspath[3].getPath().toString());
-      assertEquals(MAVEN_CLASSPATH_CONTAINER, rawClasspath[4].getPath().toString());
+      assertEquals(JRE_CONTAINER_J2SE_1_5, rawClasspath[2].getPath().toString());
+      assertEquals(MAVEN_CLASSPATH_CONTAINER, rawClasspath[3].getPath().toString());
       //assertEquals("org.eclipse.jst.j2ee.internal.module.container", rawClasspath[4].getPath().toString());
     }
 
