@@ -2051,7 +2051,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     
     IVirtualComponent warComp = ComponentCore.createComponent(war);
     Map<String, Object> options = new HashMap<String, Object>(1);
-    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, IVirtualComponent.DISPLAYABLE_REFERENCES_ALL);
+    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, WTPProjectsUtil.DYN_REQUESTED_REFERENCE_TYPE);
     IVirtualReference[] refs = warComp.getReferences(options);
     assertEquals(1, refs.length);
     
