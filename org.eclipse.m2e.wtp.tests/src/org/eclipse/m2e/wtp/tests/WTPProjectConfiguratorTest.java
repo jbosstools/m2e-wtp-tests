@@ -2062,7 +2062,23 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     refs = warComp.getReferences(options);
     assertEquals("util project reference was not removed", 0, refs.length);
   }
-  
+
+  @Test
+  public void test382082_DontCopyTimestampedSnapshots() throws Exception {
+    IProject war = importProject("projects/382080/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(war);
+
+    IJavaProject javaProject = JavaCore.create(war);
+    IClasspathContainer container = BuildPathManager.getMaven2ClasspathContainer(javaProject);
+    IClasspathEntry[] cp = container.getClasspathEntries();
+
+    assertEquals(1, cp.length);
+    String expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar";
+    String path = cp[0].getPath().toPortableString(); 
+    assertTrue("Unexpected path : "+path, path.endsWith(expectedPath));
+  }
+
   private static String dumpModules(List<Module> modules) {
     if(modules == null)
       return "Null modules";
