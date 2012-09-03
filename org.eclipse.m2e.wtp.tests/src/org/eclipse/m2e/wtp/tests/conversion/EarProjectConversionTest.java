@@ -48,6 +48,17 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		testProjectConversion("ear13");
 	}
 	
+	public void testEarWithoutContentFolder() throws Exception {
+		//Checks an EAR without a content folder can be converted and the pom.xml is created.
+		testProjectConversion("EARNoContent");		
+	}
+	
+	public void testEarWithoutContentFolderWithoutDefaultRootSourceTag() throws Exception {
+		// Checks an EAR without a content folder, and without the attribute tag="defaultRootSource
+		// in .settings/org.eclipse.wst.common.component can be converted and the pom.xml is created.
+		testProjectConversion("EARNoContentNoTag");
+	}
+	
     protected void checkForErrors(IProject project) throws CoreException {
 	   	List<IMarker> markers = findErrorMarkers(project);
 	   	Iterator<IMarker> ite = markers.iterator();
