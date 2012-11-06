@@ -36,7 +36,7 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		//and sets <generateApplicationXml> to false 
 		testProjectConversion("ear60");
 	}
-	
+
 	public void testEar60WithDD() throws Exception {
 		//Checks an EAR 6.0 project with an application.xml configures the proper <version> 
 		//and doesn't set <generateApplicationXml>, as it's true by default 
@@ -57,6 +57,11 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		// Checks an EAR without a content folder, and without the attribute tag="defaultRootSource
 		// in .settings/org.eclipse.wst.common.component can be converted and the pom.xml is created.
 		testProjectConversion("EARNoContentNoTag");
+	}
+
+	public void test393611_Ear50ProjectConversion() throws Exception {
+		//Checks an EAR 5.0 project configures the proper <version> 
+		testProjectConversion("ear50");
 	}
 	
     protected void checkForErrors(IProject project) throws CoreException {
