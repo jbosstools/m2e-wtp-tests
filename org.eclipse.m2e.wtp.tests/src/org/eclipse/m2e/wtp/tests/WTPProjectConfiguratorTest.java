@@ -1630,6 +1630,32 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   }
 
   @Test
+  public void test389791_ejbNoVersionfileNames() throws Exception {
+    // Exported filenames should be consistent when workspace resolution is on/off
+    IProject[] projects = importProjects("projects/389791/", //
+        new String[] {"ear-ejbNoVersionFileNames/pom.xml", "testFileNameEjb/pom.xml"}, new ResolverConfiguration());
+
+    waitForJobsToComplete();
+
+    assertEquals(2, projects.length);
+    IProject ear = projects[0];
+    IProject ejb = projects[1];
+
+    assertNoErrors(ear);
+    assertNoErrors(ejb);
+
+    IVirtualComponent earComp = ComponentCore.createComponent(ear);
+    IVirtualReference ejbRef = earComp.getReference("testFileNameEjb");
+    assertNotNull(ejbRef);
+    assertEquals("testFileNameEjb.jar", ejbRef.getArchiveName());
+
+    IVirtualReference junitRef = earComp.getReference("var/M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar");
+    assertNotNull(junitRef);
+    assertEquals("junit-3.8.1.jar", junitRef.getArchiveName());
+
+  }
+
+  @Test
   public void testMECLIPSEWTP108_DependencyArchiveName() throws Exception {
     IProject[] projects = importProjects("projects/MECLIPSEWTP-108", //
         new String[] {"pom.xml", "webapp/pom.xml", "utility/pom.xml"}, new ResolverConfiguration());
