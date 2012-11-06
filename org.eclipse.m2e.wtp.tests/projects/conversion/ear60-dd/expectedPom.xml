@@ -12,6 +12,7 @@
         <configuration>
           <earSourceDirectory>EarContent</earSourceDirectory>
           <version>6</version>
+          <defaultLibBundleDir>lib</defaultLibBundleDir>
         </configuration>
       </plugin>
     </plugins>

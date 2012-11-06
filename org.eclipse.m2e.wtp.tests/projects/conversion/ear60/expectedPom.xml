@@ -13,6 +13,7 @@
           <earSourceDirectory>EarContent</earSourceDirectory>
           <generateApplicationXml>false</generateApplicationXml>
           <version>6</version>
+          <defaultLibBundleDir>lib</defaultLibBundleDir>
         </configuration>
       </plugin>
     </plugins>

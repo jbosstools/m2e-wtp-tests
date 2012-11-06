@@ -20,7 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Test EJB project conversion
+ * Test EAR project conversion
  *  
  * @author Fred Bricon
  */
@@ -62,6 +62,11 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 	public void test393611_Ear50ProjectConversion() throws Exception {
 		//Checks an EAR 5.0 project configures the proper <version> 
 		testProjectConversion("ear50");
+	}
+	
+	public void test390931_DefaultLibDirConfiguration() throws Exception {
+		//Checks an EAR 1.4 with a weblogic structure configures the proper <defaultLibBundleDir> 
+		testProjectConversion("weblo");
 	}
 	
     protected void checkForErrors(IProject project) throws CoreException {
