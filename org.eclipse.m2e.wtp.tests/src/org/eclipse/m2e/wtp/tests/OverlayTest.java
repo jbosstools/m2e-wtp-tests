@@ -43,14 +43,10 @@ public class OverlayTest extends AbstractWTPTestCase {
       assertEquals(OverlaySelfComponent.class, references[1].getReferencedComponent().getClass());
       System.out.println("2 references read for "+war);
       
-      System.out.println("Creating preview server");
       IServer server = TestServerUtil.createPreviewServer();
-      System.out.println("adding project to preview server");
       TestServerUtil.addProjectToServer(war, server);
-      System.out.println("project added to preview server");
 
       List<String> resources = TestServerUtil.toList(TestServerUtil.getServerModuleResources(war));
-      System.out.println("server module resources :"+resources.size());
       
       assertTrue("META-INF/MANIFEST.MF is missing from "+ resources, resources.contains("META-INF/MANIFEST.MF"));
       assertTrue("WEB-INF/lib/junit-3.8.2.jar is missing from "+ resources,resources.contains("WEB-INF/lib/junit-3.8.2.jar"));
@@ -237,7 +233,7 @@ public class OverlayTest extends AbstractWTPTestCase {
       TestServerUtil.addProjectToServer(war, server);
 
       List<String> resources = TestServerUtil.toList(TestServerUtil.getServerModuleResources(war));
-      System.out.println("server module resources :"+resources);
+      //System.out.println("server module resources :"+resources);
       
       assertTrue("META-INF/MANIFEST.MF is missing from "+ resources, resources.contains("META-INF/MANIFEST.MF"));
       assertFalse("WEB-INF/lib/junit-3.8.2.jar should be missing from "+ resources,resources.contains("WEB-INF/lib/junit-3.8.2.jar"));
@@ -248,5 +244,29 @@ public class OverlayTest extends AbstractWTPTestCase {
       assertTrue("META-INF/maven/test.overlays/war-archive-overlay/pom.xml is missing from "+ resources, resources.contains("META-INF/maven/test.overlays/war-archive-overlay/pom.xml"));
   }
   
+  @Test
+  public void test392437_OverlayContainingWebFragment() throws Exception {
+      IProject[] projects = importProjects("projects/overlays/392437",
+                              new String[]{"master/pom.xml", "servant/pom.xml"},
+                              new ResolverConfiguration()
+                            );
+      waitForJobsToComplete();
+      IProject war = projects[0];
+      assertNoErrors(war);
+      IProject overlaid = projects[1];
+      assertNoErrors(overlaid);
+      
+      IVirtualComponent comp = ComponentCore.createComponent(war);
+      assertNotNull(comp);
+      
+      IServer server = TestServerUtil.createPreviewServer();
+      TestServerUtil.addProjectToServer(war, server);
+      
+      List<String> resources = TestServerUtil.toList(TestServerUtil.getServerModuleResources(war));
+      assertTrue("META-INF/MANIFEST.MF is missing from "+ resources, resources.contains("META-INF/MANIFEST.MF"));
+      assertTrue("WEB-INF/lib/webfragment-0.0.1-SNAPSHOT.jar is missing from "+ resources,resources.contains("WEB-INF/lib/webfragment-0.0.1-SNAPSHOT.jar"));
+      assertTrue("index.html is missing from "+ resources,resources.contains("index.html"));
+      
+  }
   
 }
