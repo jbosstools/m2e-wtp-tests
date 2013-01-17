@@ -15,10 +15,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.MavenModelManager;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
+import org.eclipse.m2e.core.project.conversion.IProjectConversionEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 
 /**
@@ -96,6 +98,9 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
     IProject project = createExisting(projectName, "projects/conversion/"+projectName);
     assertTrue(projectName + " was not created!", project.exists());
     assertNoErrors(project);
+
+    //Check project has proper conversion enabler configured
+    assertConversionEnabler(project, getPackagingUnderTest());
     
     //Check the project converts and builds correctly
     assertConvertsAndBuilds(project);
@@ -103,21 +108,55 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
     return project;
   }
 
+  private void assertConversionEnabler(IProject project, String packagingUnderTest) {
+    IProjectConversionEnabler conversionEnabler = MavenPlugin.getProjectConversionManager().getConversionEnablerForProject(project);
+	assertNotNull(conversionEnabler);
+    IStatus conversionStatus = conversionEnabler .canBeConverted(project);
+	assertEquals(IStatus.OK, conversionStatus.getSeverity());
+	String[] packagings = conversionEnabler.getPackagingTypes(project);
+	assertEquals("Expected one packaging but got "+ packagings, 1, packagings.length);
+	assertEquals(packagingUnderTest, packagings[0]); 
+  }
+
   protected void assertConvertsAndBuilds(IProject project) throws CoreException, InterruptedException, Exception {
-    //Convert the project to a Maven project (generates pom.xml, enables Maven nature)
-    convert(project);
-    
-    //Checks the generated pom.xml is identical to /<projectName>/expectedPom.xml
-    verifyGeneratedPom(project);
-    
-    //Checks the Maven project builds without errors
-    project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-    waitForJobsToComplete();
-    checkForErrors(project);
+
+	try {
+		setCompilerVersion(getCompilerVersion());
+		
+		//Convert the project to a Maven project (generates pom.xml, enables Maven nature)
+		convert(project);
+		
+		//Checks the generated pom.xml is identical to /<projectName>/expectedPom.xml
+		verifyGeneratedPom(project);
+		
+		//Checks the Maven project builds without errors
+		project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+		waitForJobsToComplete();
+		checkForErrors(project);
+	} finally {
+		restoreCompilerVersion();
+	}
   }
   
+  protected String getCompilerVersion() {
+	//Lock compiler version so that m2e-jdt evolutions don't bite us
+	return "2.3.2";
+  }
+
   protected void checkForErrors(IProject project) throws CoreException {
 	    assertNoErrors(project);
   }
 
+  protected void setCompilerVersion(String version) {
+	  if (version == null) {
+		  restoreCompilerVersion();
+	  } else {
+		  System.setProperty("org.eclipse.m2e.jdt.conversion.compiler.version", version);
+	  }
+  }
+  
+  protected void restoreCompilerVersion() {
+	 System.clearProperty("org.eclipse.m2e.jdt.conversion.compiler.version");
+  }
+  
 }
