@@ -2105,6 +2105,22 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertTrue("Unexpected path : "+path, path.endsWith(expectedPath));
   }
 
+  @Test
+  public void test398714_emptylibDir() throws Exception {
+    IProject ear = importProject("projects/398714/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(ear);
+
+    IFacetedProject fpEar = ProjectFacetsManager.create(ear);
+    assertNotNull(fpEar);
+    assertEquals(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60, fpEar.getInstalledVersion(EAR_FACET));
+
+    final Application app = (Application) ModelProviderManager.getModelProvider(ear).getModelObject();
+    assertNotNull(app);
+    assertEquals("lib", app.getLibraryDirectory());
+  }
+
+
   private static String dumpModules(List<Module> modules) {
     if(modules == null)
       return "Null modules";
