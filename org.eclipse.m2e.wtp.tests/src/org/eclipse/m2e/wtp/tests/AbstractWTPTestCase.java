@@ -8,11 +8,14 @@
 
 package org.eclipse.m2e.wtp.tests;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -163,6 +166,21 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     return content;
   }
 
+  protected static String getAsString(File file) throws IOException {
+	    assert file != null;
+	    assert file.isFile();
+	    InputStream ins = null;
+	    String content = null;
+	    try {
+	      ins = new FileInputStream(file);
+	      content = IOUtil.toString(ins, 1024).replaceAll("\r\n", "\n");
+	    } finally {
+	      IOUtil.close(ins);   
+	    }
+	    return content;
+	  }
+
+  
   public AbstractWTPTestCase() {
     super();
   }
