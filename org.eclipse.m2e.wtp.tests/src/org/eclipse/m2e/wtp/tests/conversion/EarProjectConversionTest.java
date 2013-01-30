@@ -74,9 +74,8 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 	   	Iterator<IMarker> ite = markers.iterator();
 	   	while (ite.hasNext()) {
 	   		IMarker m = ite.next();
-	   		String msg = m.getAttribute(IMarker.MESSAGE, null);
 	   		//Ignore application.xml validation error as the test EAR projects are incomplete
-	   		if (msg.startsWith("IWAE0053E")) {
+	   		if (m.getResource().getName().endsWith("application.xml")) {
 	   			ite.remove();
 	   		}
 	   	}
