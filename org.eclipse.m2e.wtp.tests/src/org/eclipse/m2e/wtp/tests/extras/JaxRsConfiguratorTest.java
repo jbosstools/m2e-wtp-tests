@@ -5,7 +5,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.tests.common.WorkspaceHelpers;
+import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
+import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -93,4 +95,25 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 		assertEquals("Unexpected JAX-RS Version", expectedJaxRsVersion, facetedProject.getInstalledVersion(MavenJaxRsConstants.JAX_RS_FACET));
 		assertTrue("Java Facet is missing",	facetedProject.hasProjectFacet(JavaFacet.FACET));
 	}
+	
+	@Test
+	public void test399104_disableJaxRsConfigurator() throws Exception {
+		ConfiguratorEnabler enabler = getConfiguratorEnabler("org.eclipse.m2e.wtp.jaxrs.enabler");
+		IProject project;
+		try {
+			enabler.setEnabled(false);
+			project = importProject("projects/jaxrs/jaxrs-jersey/pom.xml");
+			waitForJobsToComplete();
+			assertNoErrors(project);
+			IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+			assertNotNull(project.getName() + " is not a faceted project", facetedProject);
+			assertNull("Unexpected JAX-RS Facet", facetedProject.getInstalledVersion(MavenJaxRsConstants.JAX_RS_FACET));
+		} finally {
+			enabler.setEnabled(true);
+		}
+		updateProject(project);
+		assertNoErrors(project);
+		assertIsJaxRsProject(project, MavenJaxRsConstants.JAX_RS_FACET_1_1);
+	}
+
 }

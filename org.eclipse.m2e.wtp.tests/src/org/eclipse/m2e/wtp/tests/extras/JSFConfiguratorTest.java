@@ -11,6 +11,7 @@ import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.tests.common.WorkspaceHelpers;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
+import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -180,7 +181,26 @@ public class JSFConfiguratorTest extends AbstractWTPTestCase {
 																	:MavenJSFConstants.JSF_FACET_VERSION_2_0;
 		assertIsJSFProject(project,expectedJsfVersion);
 	}	
-	
+
+	@Test
+	public void test399104_disableJSFConfigurator() throws Exception {
+		ConfiguratorEnabler enabler = getConfiguratorEnabler("org.eclipse.m2e.wtp.jsf.enabler");
+		IProject project;
+		try {
+			enabler.setEnabled(false);
+			project = importProject("projects/jsf/jsf-webxml/pom.xml");
+			waitForJobsToComplete();
+			assertNoErrors(project);
+			IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+			assertNotNull(project.getName() + " is not a faceted project", facetedProject);
+			assertNull("Unexpected JSF Facet", facetedProject.getInstalledVersion(MavenJSFConstants.JSF_FACET));
+		} finally {
+			enabler.setEnabled(true);
+		}
+		updateProject(project);
+		assertNoErrors(project);
+		assertIsJSFProject(project, MavenJSFConstants.JSF_FACET_VERSION_2_0);
+	}
 	private void assertHasJSFConfigurationError(IProject project, String message) throws Exception {
 		WorkspaceHelpers.assertErrorMarker(MavenJSFConstants.JSF_CONFIGURATION_ERROR_MARKER_ID, message, 1, "", project);
 	}

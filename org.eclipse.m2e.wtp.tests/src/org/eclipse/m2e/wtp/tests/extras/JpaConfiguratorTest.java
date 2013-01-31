@@ -3,6 +3,8 @@ package org.eclipse.m2e.wtp.tests.extras;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
+import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
+import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
@@ -64,5 +66,24 @@ public class JpaConfiguratorTest extends AbstractWTPTestCase {
 		
 		assertIsJpaProject(ejb, JPA_FACET_VERSION_2_0);
 	}
-	
+
+	@Test
+	public void test399104_disableJpaConfigurator() throws Exception {
+		ConfiguratorEnabler enabler = getConfiguratorEnabler("org.eclipse.m2e.wtp.jpa.enabler");
+		IProject project;
+		try {
+			enabler.setEnabled(false);
+			project = importProject("projects/jpa/simple-2.0/pom.xml");
+			waitForJobsToComplete();
+			assertNoErrors(project);
+			IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+			assertNull(project.getName() + " shouldn't be a Faceted project ",facetedProject);
+		} finally {
+			enabler.setEnabled(true);
+		}
+		updateProject(project);
+		assertNoErrors(project);
+		assertIsJpaProject(project, JPA_FACET_VERSION_2_0);
+		
+	}
 }

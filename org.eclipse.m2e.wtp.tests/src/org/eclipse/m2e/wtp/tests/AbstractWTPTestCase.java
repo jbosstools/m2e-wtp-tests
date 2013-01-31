@@ -41,6 +41,7 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.jdt.internal.BuildPathManager;
 import org.eclipse.m2e.tests.common.AbstractMavenProjectTestCase;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
+import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
@@ -265,4 +266,15 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 	   		Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
 	   	}
 	}
+  
+	protected ConfiguratorEnabler getConfiguratorEnabler(String id) {
+		for ( ConfiguratorEnabler e : MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getConfiguratorEnablers()) {
+			if (e.getId().equals(id)) {
+				return e;
+			}
+		}
+		fail("ConfiguratorEnabler "+ id + " not found");
+		return null;
+	}		
+
 }
