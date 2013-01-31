@@ -55,7 +55,7 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 		
 		//Check markers are removed upon configuration update
 		copyContent(jaxRsProject, "src/main/webapp/WEB-INF/good-web.xml", "src/main/webapp/WEB-INF/web.xml", true);
-		updateProject(jaxRsProject);
+		updateProject(jaxRsProject, null, 1000);
 		assertNoErrors(jaxRsProject);
 		assertIsJaxRsProject(jaxRsProject, MavenJaxRsConstants.JAX_RS_FACET_1_1);
 	}
