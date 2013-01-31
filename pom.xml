@@ -77,7 +77,7 @@
     <repository>
       <id>m2e-wtp</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/m2e-wtp/snapshots/</url>
+      <url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}</url>
     </repository>    
     <repository>
       <id>orbit</id>
