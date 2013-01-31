@@ -69,19 +69,8 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		testProjectConversion("weblo");
 	}
 	
-    protected void checkForErrors(IProject project) throws CoreException {
-	   	List<IMarker> markers = findErrorMarkers(project);
-	   	Iterator<IMarker> ite = markers.iterator();
-	   	while (ite.hasNext()) {
-	   		IMarker m = ite.next();
-	   		//Ignore application.xml validation error as the test EAR projects are incomplete
-	   		if (m.getResource().getName().endsWith("application.xml")) {
-	   			ite.remove();
-	   		}
-	   	}
-	   	if (!markers.isEmpty()) {
-	   		Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
-	   	}
+	@Override
+	protected void checkForErrors(IProject project) throws CoreException {
+		super.checkForErrors(project, "application.xml");
 	}
-
 }

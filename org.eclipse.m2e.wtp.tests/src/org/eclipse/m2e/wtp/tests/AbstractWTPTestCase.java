@@ -12,8 +12,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import junit.framework.Assert;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -244,4 +247,22 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected void useBuildDirforGeneratingFiles(boolean b) {
     useBuildDirforGeneratingFiles(null, b);
   }  
+  
+  protected void checkForErrors(IProject project, String ... ignoredFiles ) throws CoreException {
+	   	List<IMarker> markers = findErrorMarkers(project);
+	   	if (ignoredFiles != null) {
+	   		Iterator<IMarker> ite = markers.iterator();
+	   		while (ite.hasNext()) {
+	   			IMarker m = ite.next();
+	   			for (String fileName : ignoredFiles) {
+	   				if (m.getResource().getName().endsWith(fileName)) {
+	   					ite.remove();
+	   				}
+	   			}
+	   		}
+	   	}
+	   	if (!markers.isEmpty()) {
+	   		Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
+	   	}
+	}
 }
