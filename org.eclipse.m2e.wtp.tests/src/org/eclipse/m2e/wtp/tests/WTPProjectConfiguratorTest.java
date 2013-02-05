@@ -2120,7 +2120,50 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("lib", app.getLibraryDirectory());
   }
 
+  @Test
+  public void test397173_DuplicateProjectArtifactId() throws Exception {
+    ResolverConfiguration configuration = new ResolverConfiguration();
+    ProjectImportConfiguration importConfiguration = new ProjectImportConfiguration(configuration);
+    importConfiguration.setProjectNameTemplate("[groupId].[artifactId]");
 
+    importProject("projects/397173/pom.xml"); 
+    waitForJobsToComplete();
+    importProject("foo.utility", "projects/397173/foo/", importConfiguration);
+    waitForJobsToComplete();
+    importProject("bar.utility", "projects/397173/bar/", importConfiguration);
+    waitForJobsToComplete();
+    IProject web = importProject("projects/397173/web/pom.xml"); 
+    waitForJobsToComplete();
+    assertNoErrors(web);
+    
+    IVirtualComponent warComponent = ComponentCore.createComponent(web);
+    
+    assertNotNull(warComponent);
+    IVirtualReference[] references = warComponent.getReferences();
+    assertEquals(2, references.length);
+    assertEquals("foo-utility-1.0.jar", warComponent.getReferences()[0].getArchiveName());
+    assertEquals("bar-utility-1.0.jar", warComponent.getReferences()[1].getArchiveName());
+  }
+
+
+  @Test
+  public void test397173_DuplicateProjectArtifactId2() throws Exception {
+
+    IProject[] projects = importProjects("projects/397173/", new String[] {"pom.xml", "web2/pom.xml", "junit/pom.xml"}, new ResolverConfiguration()); 
+    IProject web = projects[1]; 
+    waitForJobsToComplete();
+    assertNoErrors(web);
+    
+    IVirtualComponent warComponent = ComponentCore.createComponent(web);
+    
+    assertNotNull(warComponent);
+    IVirtualReference[] references = warComponent.getReferences();
+    assertEquals(2, references.length);
+    assertEquals("junit-3.8.1.jar", warComponent.getReferences()[0].getArchiveName());
+    assertEquals("junit-junit-3.8.1.jar", warComponent.getReferences()[1].getArchiveName());
+  }
+  
+  
   private static String dumpModules(List<Module> modules) {
     if(modules == null)
       return "Null modules";
