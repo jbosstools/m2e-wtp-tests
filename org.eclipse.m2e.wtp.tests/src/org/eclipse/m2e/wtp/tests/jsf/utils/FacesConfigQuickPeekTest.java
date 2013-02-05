@@ -17,9 +17,11 @@ import java.io.UnsupportedEncodingException;
 import junit.framework.TestCase;
 
 import org.eclipse.m2e.wtp.jsf.internal.utils.FacesConfigQuickPeek;
+import org.junit.Test;
 
 public class FacesConfigQuickPeekTest extends TestCase {
 
+	@Test
 	public void testGetVersion() {
 		assertVersion("2.0", getInputStream("<faces-config version=\"2.0\"></faces-config>"));
 		assertVersion("1.2", getInputStream("<faces-config version=\"1.2\"></faces-config>"));
@@ -30,6 +32,7 @@ public class FacesConfigQuickPeekTest extends TestCase {
 		assertVersion(null, getInputStream("<dummy version=\"3.0\">"));
 	}
 
+	@Test
 	public void testGetVersionFromDTD() {
 		assertVersion("1.0", getInputStream("<!DOCTYPE faces-config PUBLIC \"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN\" \"http://java.sun.com/dtd/web-facesconfig_1_0.dtd\"><faces-config></faces-config>"));
 		assertVersion("1.1", getInputStream("<!DOCTYPE faces-config PUBLIC \"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN\" \"http://java.sun.com/dtd/web-facesconfig_1_1.dtd\"><faces-config></faces-config>"));

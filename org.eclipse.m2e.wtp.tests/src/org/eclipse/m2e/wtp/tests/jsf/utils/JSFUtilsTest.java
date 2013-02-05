@@ -16,6 +16,7 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.m2e.wtp.jsf.internal.utils.JSFUtils;
+import org.junit.Test;
 
 public class JSFUtilsTest extends TestCase {
 
@@ -40,6 +41,7 @@ public class JSFUtilsTest extends TestCase {
 			"</web-app>";
 	
 
+	@Test
 	public void testHasFacesServlet() {
 		InputStream is = null; 
 		assertFalse(JSFUtils.hasFacesServlet(is));

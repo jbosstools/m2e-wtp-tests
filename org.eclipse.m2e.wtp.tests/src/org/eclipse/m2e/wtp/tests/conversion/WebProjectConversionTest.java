@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.tests.conversion;
 
+import org.junit.Test;
+
 /**
  * Test Dynamic Web project conversion
  *  
@@ -22,7 +24,7 @@ public class WebProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		return "war";
 	}
 
-
+	@Test
 	public void testWeb24ProjectConversion() throws Exception {
 		// Checks a servlet 2.4 project with standard Eclipse WebContent folder
 		// configures <warSourceDirectory>
@@ -30,12 +32,14 @@ public class WebProjectConversionTest extends AbstractWtpProjectConversionTestCa
 	}
 	
 
+	@Test
 	public void testWeb30ProjectConversion() throws Exception {
 		// Checks a servlet 3.0 project with standard Eclipse WebContent folder
 		// configures <warSourceDirectory> and sets <failOnMissingWebXml> to false
 		testProjectConversion("web30");
 	}
 
+	@Test
 	public void testNoCustomizationNeededProjectConversion() throws Exception {
 		// Checks a servlet 2.4 project with maven layout and Java 1.5 produces
 		// a minimal pom.xml

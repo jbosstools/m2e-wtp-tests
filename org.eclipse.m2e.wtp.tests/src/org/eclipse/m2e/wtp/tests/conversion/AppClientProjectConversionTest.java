@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.tests.conversion;
 
+import org.junit.Test;
+
 /**
  * Test Application-client project conversion
  *  
@@ -22,11 +24,12 @@ public class AppClientProjectConversionTest extends AbstractWtpProjectConversion
 		return "app-client";
 	}
 
-
+	@Test
 	public void testAppClientProjectConversion() throws Exception {
 		testProjectConversion("app-client-1");
 	}
 
+	@Test
 	public void testMinimalAppClientProjectConversion() throws Exception {
 		testProjectConversion("app-client-2");
 	}

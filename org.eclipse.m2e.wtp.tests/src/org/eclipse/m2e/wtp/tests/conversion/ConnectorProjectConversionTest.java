@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.tests.conversion;
 
+import org.junit.Test;
+
 /**
  * Test Application-client project conversion
  *  
@@ -22,10 +24,12 @@ public class ConnectorProjectConversionTest extends AbstractWtpProjectConversion
 		return "rar";
 	}
 
+	@Test
 	public void testConnectorProjectConversion() throws Exception {
 		testProjectConversion("jca16");
 	}
 
+	@Test
 	public void testNoMavenRarConfigProjectConversion() throws Exception {
 		testProjectConversion("jca15");
 	}

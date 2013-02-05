@@ -18,6 +18,7 @@ import junit.framework.Assert;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Test;
 
 /**
  * Test EAR project conversion
@@ -31,39 +32,46 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		return "ear";
 	}
 
+	@Test
 	public void testEar60ProjectConversion() throws Exception {
 		//Checks an EAR 6.0 project without application.xml configures the proper <version> 
 		//and sets <generateApplicationXml> to false 
 		testProjectConversion("ear60");
 	}
 
+	@Test
 	public void testEar60WithDD() throws Exception {
 		//Checks an EAR 6.0 project with an application.xml configures the proper <version> 
 		//and doesn't set <generateApplicationXml>, as it's true by default 
 		testProjectConversion("ear60-dd");
 	}
 
+	@Test
 	public void testNoCustomizationNeededProjectConversion() throws Exception {
 		// Checks an EAR 1.3 project with maven layout produces a minimal pom.xml
 		testProjectConversion("ear13");
 	}
 	
+	@Test
 	public void testEarWithoutContentFolder() throws Exception {
 		//Checks an EAR without a content folder can be converted and the pom.xml is created.
 		testProjectConversion("EARNoContent");		
 	}
 	
+	@Test
 	public void testEarWithoutContentFolderWithoutDefaultRootSourceTag() throws Exception {
 		// Checks an EAR without a content folder, and without the attribute tag="defaultRootSource
 		// in .settings/org.eclipse.wst.common.component can be converted and the pom.xml is created.
 		testProjectConversion("EARNoContentNoTag");
 	}
 
+	@Test
 	public void test393611_Ear50ProjectConversion() throws Exception {
 		//Checks an EAR 5.0 project configures the proper <version> 
 		testProjectConversion("ear50");
 	}
 	
+	@Test
 	public void test390931_DefaultLibDirConfiguration() throws Exception {
 		//Checks an EAR 1.4 with a weblogic structure configures the proper <defaultLibBundleDir> 
 		testProjectConversion("weblo");

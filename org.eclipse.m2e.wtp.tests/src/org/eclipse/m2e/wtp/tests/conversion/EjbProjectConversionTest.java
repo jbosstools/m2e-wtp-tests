@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.tests.conversion;
 
+import org.junit.Test;
+
 /**
  * Test EJB project conversion
  *  
@@ -23,10 +25,12 @@ public class EjbProjectConversionTest extends AbstractWtpProjectConversionTestCa
 	}
 
 
+	@Test
 	public void testEjb31ProjectConversion() throws Exception {
 		testProjectConversion("ejb31");
 	}
 	
+	@Test
 	public void testNoCustomizationNeededProjectConversion() throws Exception {
 		// Checks an EJB 2.1 project with maven layout and Java 1.5 produces
 		// a minimal pom.xml
