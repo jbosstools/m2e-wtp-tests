@@ -27,4 +27,6 @@ Require-Bundle: org.junit,
  org.eclipse.equinox.ds,
  org.eclipse.m2e.wtp.jsf,
  org.eclipse.m2e.wtp.jpa,
- org.eclipse.m2e.wtp.jaxrs
+ org.eclipse.m2e.wtp.jaxrs,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.launching
