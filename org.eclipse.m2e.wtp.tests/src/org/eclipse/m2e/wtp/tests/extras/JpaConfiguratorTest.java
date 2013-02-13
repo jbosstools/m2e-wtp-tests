@@ -1,9 +1,9 @@
 package org.eclipse.m2e.wtp.tests.extras;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
-import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -84,6 +84,18 @@ public class JpaConfiguratorTest extends AbstractWTPTestCase {
 		updateProject(project);
 		assertNoErrors(project);
 		assertIsJpaProject(project, JPA_FACET_VERSION_2_0);
-		
 	}
+	
+
+	@Test
+	public void test400577_dontGenerateFiles() throws Exception {
+		IProject project = importProject( "projects/jpa/non-default-source/pom.xml");
+		waitForJobsToComplete();
+		
+		assertIsJpaProject(project, JPA_FACET_VERSION_2_0);
+		assertNoErrors(project);
+		IFile badPersistenceXml =project.getFile("src/main/resources/META-INF/persistence.xml"); 
+		assertFalse(badPersistenceXml + " should not have been generated",badPersistenceXml.exists());
+	}	
+	
 }
