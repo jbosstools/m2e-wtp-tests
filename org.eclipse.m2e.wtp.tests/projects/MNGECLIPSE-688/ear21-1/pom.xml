@@ -11,6 +11,13 @@
   			<artifactId>maven-ear-plugin</artifactId>
   			<configuration>
   				<earSourceDirectory>CustomEarSourceDirectory</earSourceDirectory>
+				<modules><!-- an EAR application.xml must have at least 1 module to be well formed DTD/XSD -->
+					<jarModule>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+						<includeInApplicationXml>true</includeInApplicationXml>
+					</jarModule>
+				</modules>
   			</configuration>
   		</plugin>
   	</plugins>

@@ -18,6 +18,7 @@
 						<jarModule>
 							<groupId>junit</groupId>
 							<artifactId>junit</artifactId>
+							<includeInApplicationXml>true</includeInApplicationXml>
 						</jarModule>
 					</modules>
 				</configuration>
