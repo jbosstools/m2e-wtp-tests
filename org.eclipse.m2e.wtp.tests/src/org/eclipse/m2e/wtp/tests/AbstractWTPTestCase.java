@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -26,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -50,6 +50,7 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.osgi.framework.Version;
 
 @SuppressWarnings("restriction")
 public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
@@ -64,6 +65,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected static final String MAVEN_CLASSPATH_CONTAINER = "org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER";
   protected static final String JRE_CONTAINER_J2SE_1_5 = "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5";
 
+  protected static final boolean canRunJavaEe7Tests = checkJavaEe7Compatibility();
 
   protected static IClasspathContainer getWebLibClasspathContainer(IJavaProject project) throws JavaModelException {
     IClasspathEntry[] entries = project.getRawClasspath();
@@ -267,7 +269,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 	   	}
 	}
   
-	protected ConfiguratorEnabler getConfiguratorEnabler(String id) {
+  protected ConfiguratorEnabler getConfiguratorEnabler(String id) {
 		for ( ConfiguratorEnabler e : MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getConfiguratorEnablers()) {
 			if (e.getId().equals(id)) {
 				return e;
@@ -275,6 +277,21 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 		}
 		fail("ConfiguratorEnabler "+ id + " not found");
 		return null;
-	}		
+  }		
 
+  private static boolean checkJavaEe7Compatibility() {
+	 String version = System.getProperty("java.vm.specification.version");
+	 double javaVersion = Double.parseDouble(version);
+	 if (javaVersion  < 1.7) {
+		System.err.println("Can't run Java EE 7 tests with Java "+javaVersion);  
+		return false;
+	 }
+	 Version j2eeVersion = Platform.getBundle("org.eclipse.jst.j2ee.web").getVersion();
+	 Version threshold = new Version(1, 1, 700);
+	 if (j2eeVersion == null || j2eeVersion.compareTo(threshold) < 0) {
+	    System.err.println("Can't run Java EE 7 tests with org.eclipse.jst.j2ee.web "+j2eeVersion.toString());  
+	 	return false;
+	 }
+	 return true;
+	}
 }
