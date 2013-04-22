@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<connector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:jca="http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" id="Connector_ID" version="1.6">
+<connector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:jca="http://xmlns.jcp.org/xml/ns/javaee/jca" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" id="Connector_ID" version="1.6">
   <description></description>
-  <display-name>jca16</display-name>
+  <display-name>rar16b</display-name>
   <vendor-name></vendor-name>
   <eis-type></eis-type>
   <resourceadapter-version></resourceadapter-version>
