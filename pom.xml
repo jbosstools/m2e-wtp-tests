@@ -18,7 +18,7 @@
 
   <groupId>org.eclipse.m2e.wtp</groupId>
   <artifactId>org.eclipse.m2e.wtp.tests.parent</artifactId>
-  <version>0.17.0-SNAPSHOT</version>
+  <version>0.18.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>M2E-WTP-TESTS :: Parent</name>
@@ -27,9 +27,9 @@
     <tycho-version>0.16.0</tycho-version>
     <test.timeout>1800</test.timeout><!--  30 mins -->       
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>juno</eclipse.target>
+    <eclipse.target>kepler</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <m2e-repo.url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.3.0/N/LATEST/</m2e-repo.url>
+    <m2e-repo.url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.4.0/N/LATEST/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.15.0/</mavenarchiver-repo.url>
   </properties>
