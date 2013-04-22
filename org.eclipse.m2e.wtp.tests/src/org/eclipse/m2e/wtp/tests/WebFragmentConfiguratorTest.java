@@ -47,7 +47,7 @@ public class WebFragmentConfiguratorTest extends AbstractWTPTestCase {
     List<IMarker> markers = findErrorMarkers(project);
     assertEquals(2, markers.size());
     assertHasMarker("One or more constraints have not been satisfied.", markers);
-    assertHasMarker("Web Fragment Module requires Java 1.6 or newer.", markers);
+    assertHasMarker("Web Fragment Module (3.0) requires Java 1.6 or newer.", markers);
 
     IFacetedProject facetedProject = ProjectFacetsManager.create(project);
     assertNotNull(facetedProject);

@@ -25,7 +25,7 @@
 
   <properties>
     <tycho-version>0.16.0</tycho-version>
-    <test.timeout>1800</test.timeout><!--  30 mins -->       
+    <test.timeout>2400</test.timeout><!--  45 mins -->       
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
     <eclipse.target>kepler</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
