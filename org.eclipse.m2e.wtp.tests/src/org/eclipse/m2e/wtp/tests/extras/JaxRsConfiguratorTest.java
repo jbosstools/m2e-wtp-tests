@@ -53,11 +53,10 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 		assertNotNull(jaxRsProject.getName() + " is not a faceted project", facetedProject);
 		assertFalse("JAX-RS Facet should be missing", facetedProject.hasProjectFacet(MavenJaxRsConstants.JAX_RS_FACET));
 		assertHasJaxRsConfigurationError(jaxRsProject, "JAX-RS (REST Web Services) 1.1 can not be installed : One or more constraints have not been satisfied.");
-		assertHasJaxRsConfigurationError(jaxRsProject, "JAX-RS (REST Web Services) 1.1 requires Dynamic Web Module 2.3 or newer.");
+		assertHasJaxRsConfigurationError(jaxRsProject, "JAX-RS (REST Web Services) 1.1 requires Java 1.5 or newer.");
 		
 		//Check markers are removed upon configuration update
-		copyContent(jaxRsProject, "src/main/webapp/WEB-INF/good-web.xml", "src/main/webapp/WEB-INF/web.xml", true);
-		updateProject(jaxRsProject, null, 1000);
+		updateProject(jaxRsProject, "good.pom.xml", 1000);
 		assertNoErrors(jaxRsProject);
 		assertIsJaxRsProject(jaxRsProject, MavenJaxRsConstants.JAX_RS_FACET_1_1);
 	}

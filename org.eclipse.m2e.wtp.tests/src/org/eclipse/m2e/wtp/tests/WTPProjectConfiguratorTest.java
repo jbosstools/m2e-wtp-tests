@@ -208,7 +208,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
   @Test
   public void testNonDefaultWarSourceDirectory() throws Exception {
-    IProject project = importProject("projects/MNGECLIPSE-627/TestWar/pom.xml", new ResolverConfiguration());
+    IProject project = importProject("projects/MNGECLIPSE-627/TestWar/pom.xml");
     waitForJobsToComplete();
     project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
     waitForJobsToComplete();
@@ -1670,36 +1670,39 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void testMECLIPSEWTP58_generateApplicationXmlInBuildDir() throws Exception {
 
-    IProject[] projects = importProjects("projects/deployment-descriptors/", //
-        new String[] {"javaEE/pom.xml", "javaEE/ear/pom.xml", "javaEE/core/pom.xml", "javaEE/ejb/pom.xml",
-            "javaEE/war/pom.xml"}, new ResolverConfiguration());
-
-    waitForJobsToComplete();
-
-    assertEquals(5, projects.length);
-    IProject ear = projects[1];
-    IProject core = projects[2];
-    IProject ejb = projects[3];
-    IProject war = projects[4];
-
-    assertNoErrors(core);
-    assertNoErrors(ejb);
-    assertNoErrors(war);
-    assertNoErrors(ear);
-
-    IFile applicationXmlInBuidDir = ear.getFile("target/" + M2E_WTP_FOLDER + "/" + EAR_RESOURCES_FOLDER
-        + "/META-INF/application.xml");
-    assertTrue(applicationXmlInBuidDir.getFullPath() + " is missing", applicationXmlInBuidDir.exists());
-
-    IFile applicationXmlInSourceDir = ear.getFile("src/main/application/META-INF/application.xml");
-    assertFalse(applicationXmlInSourceDir.getFullPath() + " shouldn't exist", applicationXmlInSourceDir.exists());
-
-    useBuildDirforGeneratingFiles(ear, false);
-    updateProject(ear);
-
-    assertFalse(applicationXmlInBuidDir.getFullPath() + " should have been deleted", applicationXmlInBuidDir.exists());
-    assertTrue(applicationXmlInSourceDir.getFullPath() + " should have been created",
-        applicationXmlInSourceDir.exists());
+	IProject[] projects = importProjects("projects/deployment-descriptors/", //
+			new String[] {"javaEE/pom.xml", "javaEE/ear/pom.xml", "javaEE/core/pom.xml", "javaEE/ejb/pom.xml",
+	"javaEE/war/pom.xml"}, new ResolverConfiguration());
+	
+	waitForJobsToComplete();
+	
+	assertEquals(5, projects.length);
+	IProject ear = projects[1];
+	IProject core = projects[2];
+	IProject ejb = projects[3];
+	IProject war = projects[4];
+	
+	assertNoErrors(core);
+	assertNoErrors(ejb);
+	assertNoErrors(war);
+	assertNoErrors(ear);
+	
+	IFile applicationXmlInBuidDir = ear.getFile("target/" + M2E_WTP_FOLDER + "/" + EAR_RESOURCES_FOLDER
+			+ "/META-INF/application.xml");
+	assertTrue(applicationXmlInBuidDir.getFullPath() + " is missing", applicationXmlInBuidDir.exists());
+	
+	IFile applicationXmlInSourceDir = ear.getFile("src/main/application/META-INF/application.xml");
+	assertFalse(applicationXmlInSourceDir.getFullPath() + " shouldn't exist", applicationXmlInSourceDir.exists());
+	
+	try {
+		useBuildDirforGeneratingFiles(ear, false);
+		updateProject(ear);
+		
+		assertFalse(applicationXmlInBuidDir.getFullPath() + " should have been deleted", applicationXmlInBuidDir.exists());
+		assertTrue(applicationXmlInSourceDir.getFullPath() + " should have been created",applicationXmlInSourceDir.exists());
+	} finally {
+		useBuildDirforGeneratingFiles(ear, true);
+	}
   }
 
   @Test
