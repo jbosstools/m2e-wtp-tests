@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.tests.conversion;
 
-import java.util.Iterator;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;

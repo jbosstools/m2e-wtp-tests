@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.tests.common.WorkspaceHelpers;
-import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
