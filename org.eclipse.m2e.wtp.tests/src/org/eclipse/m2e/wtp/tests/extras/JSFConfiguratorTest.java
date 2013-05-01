@@ -218,7 +218,31 @@ public class JSFConfiguratorTest extends AbstractWTPTestCase {
 		assertIsJSFProject(project,MavenJSFConstants.JSF_FACET_VERSION_2_2);
 	}	
 	
+	@Test
+	public void test406826_forceDisableJSFConfigurator() throws Exception {
+		IProject project = importProject("projects/jsf/jsf-disabled/pom.xml");
+		waitForJobsToComplete();
+		assertNoErrors(project);
+		IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+		assertNotNull(project.getName() + " is not a faceted project", facetedProject);
+		assertNull("Unexpected JAX-RS Facet", facetedProject.getInstalledVersion(MavenJSFConstants.JSF_FACET));
+	}
 	
+	
+	@Test
+	public void test406826_forceEnableJSFConfigurator() throws Exception {
+		ConfiguratorEnabler enabler = getConfiguratorEnabler("org.eclipse.m2e.wtp.jsf.enabler");
+		IProject project;
+		try {
+			enabler.setEnabled(false);
+			project = importProject("projects/jsf/jsf-enabled/pom.xml");
+			waitForJobsToComplete();
+			assertNoErrors(project);
+			assertIsJSFProject(project, MavenJSFConstants.JSF_FACET_VERSION_2_0);
+		} finally {
+			enabler.setEnabled(true);
+		}
+	}	
 	private void assertHasJSFConfigurationError(IProject project, String message) throws Exception {
 		WorkspaceHelpers.assertErrorMarker(MavenJSFConstants.JSF_CONFIGURATION_ERROR_MARKER_ID, message, 1, "", project);
 	}
