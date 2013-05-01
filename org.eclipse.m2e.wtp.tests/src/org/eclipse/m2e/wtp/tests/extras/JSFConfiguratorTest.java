@@ -225,7 +225,7 @@ public class JSFConfiguratorTest extends AbstractWTPTestCase {
 		assertNoErrors(project);
 		IFacetedProject facetedProject = ProjectFacetsManager.create(project);
 		assertNotNull(project.getName() + " is not a faceted project", facetedProject);
-		assertNull("Unexpected JAX-RS Facet", facetedProject.getInstalledVersion(MavenJSFConstants.JSF_FACET));
+		assertNull("Unexpected JSF Facet", facetedProject.getInstalledVersion(MavenJSFConstants.JSF_FACET));
 	}
 	
 	
