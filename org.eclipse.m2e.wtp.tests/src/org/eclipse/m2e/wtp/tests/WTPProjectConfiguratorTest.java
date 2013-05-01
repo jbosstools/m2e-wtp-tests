@@ -11,6 +11,7 @@ package org.eclipse.m2e.wtp.tests;
 import static org.eclipse.m2e.wtp.MavenWtpConstants.EAR_RESOURCES_FOLDER;
 import static org.eclipse.m2e.wtp.MavenWtpConstants.M2E_WTP_FOLDER;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -252,9 +254,35 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IClasspathContainer container = BuildPathManager.getMaven2ClasspathContainer(javaProject);
     IClasspathEntry[] cp = container.getClasspathEntries();
 
+    assertNoErrors(project);
     assertEquals(2, cp.length);
     assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
+    IFolder jarRenameFolder = project.getFolder("target/m2e-wtp/jar-rename");
+    assertEquals(jarRenameFolder.getLocation(), cp[0].getPath().removeLastSegments(1));
     assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
+    assertEquals(jarRenameFolder.getLocation(), cp[1].getPath().removeLastSegments(1));
+    
+    //Check we're still good after a project update
+    updateProject(project);
+    assertNoErrors(project);
+    
+    //Check the jar-rename folder is recreated if deleted
+    jarRenameFolder.delete(true, monitor);
+    waitForJobsToComplete();
+    assertFalse(jarRenameFolder.exists());
+    
+    updateProject(project);
+    assertNoErrors(project);
+    assertTrue("junit-junit-3.8.1.jar was not recopied", jarRenameFolder.exists(new Path("junit-junit-3.8.1.jar")));
+    assertTrue("test-junit-3.8.1.jar was not recopied", jarRenameFolder.exists(new Path("test-junit-3.8.1.jar")));
+    
+    //Check jar-rename always contains up-to-date files.
+    long then = System.currentTimeMillis();
+    File testJunit = new File("target/localrepo/test/junit/3.8.1/junit-3.8.1.jar");
+    testJunit.setLastModified(then);
+    updateProject(project);
+    assertEquals(then, jarRenameFolder.getFile("test-junit-3.8.1.jar").getLocalTimeStamp());
+    
   }
 
   @Test
@@ -2093,7 +2121,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   }
 
   @Test
-  public void test382082_DontCopyTimestampedSnapshots() throws Exception {
+  public void test382080_DontCopyTimestampedSnapshots() throws Exception {
     IProject war = importProject("projects/382080/pom.xml");
     waitForJobsToComplete();
     assertNoErrors(war);
@@ -2165,8 +2193,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("junit-3.8.1.jar", warComponent.getReferences()[0].getArchiveName());
     assertEquals("junit-junit-3.8.1.jar", warComponent.getReferences()[1].getArchiveName());
   }
-  
-  
+    
   private static String dumpModules(List<Module> modules) {
     if(modules == null)
       return "Null modules";
