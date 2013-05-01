@@ -113,5 +113,32 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 		assertNoErrors(project);
 		assertIsJaxRsProject(project, MavenJaxRsConstants.JAX_RS_FACET_1_1);
 	}
+	
+	
+	@Test
+	public void test406828_forceDisableJaxRsConfigurator() throws Exception {
+		IProject project = importProject("projects/jaxrs/jaxrs-disabled/pom.xml");
+		waitForJobsToComplete();
+		assertNoErrors(project);
+		IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+		assertNotNull(project.getName() + " is not a faceted project", facetedProject);
+		assertNull("Unexpected JAX-RS Facet", facetedProject.getInstalledVersion(MavenJaxRsConstants.JAX_RS_FACET));
+	}
+	
+	
+	@Test
+	public void test406828_forceEnableJaxRsConfigurator() throws Exception {
+		ConfiguratorEnabler enabler = getConfiguratorEnabler("org.eclipse.m2e.wtp.jaxrs.enabler");
+		IProject project;
+		try {
+			enabler.setEnabled(false);
+			project = importProject("projects/jaxrs/jaxrs-enabled/pom.xml");
+			waitForJobsToComplete();
+			assertNoErrors(project);
+			assertIsJaxRsProject(project, MavenJaxRsConstants.JAX_RS_FACET_1_1);
+		} finally {
+			enabler.setEnabled(true);
+		}
+	}
 
 }
