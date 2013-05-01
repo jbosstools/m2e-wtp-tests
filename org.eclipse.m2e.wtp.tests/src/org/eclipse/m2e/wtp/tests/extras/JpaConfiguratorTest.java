@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
+import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -97,5 +98,30 @@ public class JpaConfiguratorTest extends AbstractWTPTestCase {
 		IFile badPersistenceXml =project.getFile("src/main/resources/META-INF/persistence.xml"); 
 		assertFalse(badPersistenceXml + " should not have been generated",badPersistenceXml.exists());
 	}	
+	
+	@Test
+	public void test406824_forceDisableJpaConfigurator() throws Exception {
+		IProject project = importProject("projects/jpa/jpa-disabled/pom.xml");
+		waitForJobsToComplete();
+		assertNoErrors(project);
+		IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+		assertNull(project.getName() + " should not be a faceted project", facetedProject);
+	}
+	
+	
+	@Test
+	public void test406824_forceEnableJpaConfigurator() throws Exception {
+		ConfiguratorEnabler enabler = getConfiguratorEnabler("org.eclipse.m2e.wtp.jpa.enabler");
+		IProject project;
+		try {
+			enabler.setEnabled(false);
+			project = importProject("projects/jpa/jpa-enabled/pom.xml");
+			waitForJobsToComplete();
+			assertNoErrors(project);
+			assertIsJpaProject(project, JPA_FACET_VERSION_2_0);
+		} finally {
+			enabler.setEnabled(true);
+		}
+	}
 	
 }
