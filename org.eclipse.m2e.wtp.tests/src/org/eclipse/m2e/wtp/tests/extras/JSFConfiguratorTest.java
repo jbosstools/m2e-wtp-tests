@@ -201,6 +201,24 @@ public class JSFConfiguratorTest extends AbstractWTPTestCase {
 		assertNoErrors(project);
 		assertIsJSFProject(project, MavenJSFConstants.JSF_FACET_VERSION_2_0);
 	}
+	
+	@Test
+	public void test406278_supportJSF22Dependencies() throws Exception {
+		IProject project = importProject("projects/jsf/jsf-jbossspec-22/pom.xml");
+		waitForJobsToComplete();
+		assertNoErrors(project);
+		assertIsJSFProject(project,MavenJSFConstants.JSF_FACET_VERSION_2_2);
+	}	
+
+	@Test
+	public void test406278_detectFaces22Config() throws Exception {
+		IProject project = importProject("projects/jsf/jsf-facesconfig-22/pom.xml");
+		waitForJobsToComplete();
+		assertNoErrors(project);
+		assertIsJSFProject(project,MavenJSFConstants.JSF_FACET_VERSION_2_2);
+	}	
+	
+	
 	private void assertHasJSFConfigurationError(IProject project, String message) throws Exception {
 		WorkspaceHelpers.assertErrorMarker(MavenJSFConstants.JSF_CONFIGURATION_ERROR_MARKER_ID, message, 1, "", project);
 	}
@@ -212,5 +230,5 @@ public class JSFConfiguratorTest extends AbstractWTPTestCase {
 			assertEquals("Unexpected JSF Version", expectedJSFVersion, facetedProject.getInstalledVersion(MavenJSFConstants.JSF_FACET));
 			assertTrue("Java Facet is missing",	facetedProject.hasProjectFacet(JavaFacet.FACET));
 			//assertTrue("faces-config.xml is missing", JSFUtils.getFacesconfig(project).exists());
-		}
+	}
 }

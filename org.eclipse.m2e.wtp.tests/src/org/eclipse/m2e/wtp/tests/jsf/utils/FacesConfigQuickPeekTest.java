@@ -42,6 +42,14 @@ public class FacesConfigQuickPeekTest extends TestCase {
 		assertVersion("2.0", getInputStream("<faces-config xmlns=\"http://java.sun.com/xml/ns/javaee\""
 													  +  " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 													  +  " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd\" >"));
+		assertVersion("2.2", getInputStream("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
+												"<faces-config xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\r\n" + 
+												"    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
+												"    xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee\r\n" + 
+												"        http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd\"\r\n" + 
+												"    version=\"2.2\">\r\n" + 
+												"</faces-config>"));
+	
 	}
 
 	private InputStream getInputStream(String s) {
