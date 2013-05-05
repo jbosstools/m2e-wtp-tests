@@ -123,5 +123,17 @@ public class JpaConfiguratorTest extends AbstractWTPTestCase {
 			enabler.setEnabled(true);
 		}
 	}
-	
+
+	@Test
+	public void testJpa21Support() throws Exception {
+		if (!canRunJavaEe7Tests) {
+			System.err.println("skipped testJpa21Support()");
+			return;
+		}
+		IProject project = importProject( "projects/jpa/jpa21/pom.xml");
+		waitForJobsToComplete();
+		
+		assertIsJpaProject(project, JPA_FACET.getVersion("2.1"));
+		assertNoErrors(project);
+	}
 }

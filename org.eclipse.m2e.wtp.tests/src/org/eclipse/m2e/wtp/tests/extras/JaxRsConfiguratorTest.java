@@ -144,6 +144,7 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 	@Test
 	public void test407236_JaxRs20() throws Exception {
 		if (!canRunJavaEe7Tests) {
+			System.err.println("skipped test407236_JaxRs20()");
 			return;
 		}
 		IProject jaxRsProject = importProject("projects/jaxrs/jaxrs-20/pom.xml");
