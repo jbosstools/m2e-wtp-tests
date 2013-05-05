@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -65,6 +66,19 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected static final String MAVEN_CLASSPATH_CONTAINER = "org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER";
   protected static final String JRE_CONTAINER_J2SE_1_5 = "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5";
 
+  protected static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
+  
+  static {
+    String archiveNameAttribute = null;
+    try {
+      Field classpathArchiveNameField = IClasspathDependencyConstants.class.getField("CLASSPATH_ARCHIVENAME_ATTRIBUTE");
+      archiveNameAttribute = (String)classpathArchiveNameField.get(null);
+    } catch (Exception e) {
+      System.err.println("IClasspathDependencyConstants.CLASSPATH_ARCHIVENAME_ATTRIBUTE not available");
+    }
+    CLASSPATH_ARCHIVENAME_ATTRIBUTE = archiveNameAttribute;
+  }
+  
   protected static final boolean canRunJavaEe7Tests = checkJavaEe7Compatibility();
 
   protected static IClasspathContainer getWebLibClasspathContainer(IJavaProject project) throws JavaModelException {

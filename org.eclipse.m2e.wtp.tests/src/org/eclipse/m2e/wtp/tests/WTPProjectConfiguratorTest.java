@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -51,6 +52,7 @@ import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.jdt.internal.BuildPathManager;
+import org.eclipse.m2e.tests.common.ClasspathHelpers;
 import org.eclipse.m2e.wtp.MavenWtpConstants;
 import org.eclipse.m2e.wtp.Messages;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
@@ -253,8 +255,21 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IClasspathEntry[] cp = container.getClasspathEntries();
 
     assertEquals(2, cp.length);
-    assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
-    assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
+    if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
+    	assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
+    	assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
+    } else {
+    	assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
+    	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cp[0], CLASSPATH_ARCHIVENAME_ATTRIBUTE);
+    	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
+    	assertEquals("junit-junit-3.8.1.jar", archiveNameAttribute.getValue());
+
+    	assertEquals("junit-3.8.1.jar", cp[1].getPath().lastSegment());
+    	archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cp[1], CLASSPATH_ARCHIVENAME_ATTRIBUTE);
+    	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
+    	assertEquals("test-junit-3.8.1.jar", archiveNameAttribute.getValue());
+
+    }
   }
 
   @Test
