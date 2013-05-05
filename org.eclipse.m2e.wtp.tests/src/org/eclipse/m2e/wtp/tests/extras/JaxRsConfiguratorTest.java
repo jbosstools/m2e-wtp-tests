@@ -47,7 +47,7 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 	public void testJBIDE9290_errorMarkers() throws Exception {
 		String projectLocation = "projects/jaxrs/jaxrs-error";
 		IProject jaxRsProject = importProject(projectLocation+"/pom.xml");
-		waitForJobsToComplete(new NullProgressMonitor());
+		waitForJobsToComplete(monitor);
 		IFacetedProject facetedProject = ProjectFacetsManager.create(jaxRsProject);
 		assertNotNull(jaxRsProject.getName() + " is not a faceted project", facetedProject);
 		assertFalse("JAX-RS Facet should be missing", facetedProject.hasProjectFacet(MavenJaxRsConstants.JAX_RS_FACET));
@@ -141,4 +141,13 @@ public class JaxRsConfiguratorTest extends AbstractWTPTestCase {
 		}
 	}
 
+	@Test
+	public void test407236_JaxRs20() throws Exception {
+		if (!canRunJavaEe7Tests) {
+			return;
+		}
+		IProject jaxRsProject = importProject("projects/jaxrs/jaxrs-20/pom.xml");
+		waitForJobsToComplete(monitor);
+		assertIsJaxRsProject(jaxRsProject, MavenJaxRsConstants.JAX_RS_FACET_2_0);
+	}
 }
