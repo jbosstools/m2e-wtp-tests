@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.m2e.wtp.facetDetectors">
+         <facetDetector
+           facetId="foo.bar"
+           class="org.eclipse.m2e.wtp.tests.facets.TestFacetDetector1"
+           priority="20"
+         />
+         <facetDetector
+           facetId="foo.bar"
+           class="org.eclipse.m2e.wtp.tests.facets.TestFacetDetector2"
+           priority="10"
+         />
+   </extension>    
+</plugin>
