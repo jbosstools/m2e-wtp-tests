@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
-import org.eclipse.m2e.wtp.Messages;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
