@@ -18,18 +18,18 @@
 
   <groupId>org.eclipse.m2e.wtp</groupId>
   <artifactId>org.eclipse.m2e.wtp.tests.parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>M2E-WTP-TESTS :: Parent</name>
 
   <properties>
-    <tycho-version>0.16.0</tycho-version>
-    <test.timeout>2400</test.timeout><!--  45 mins -->       
+    <tycho-version>0.18.0</tycho-version>
+    <test.timeout>2400</test.timeout><!--  45 mins -->
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
     <eclipse.target>kepler</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <m2e-repo.url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.4.0/N/LATEST/</m2e-repo.url>
+    <m2e-repo.url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.15.0/</mavenarchiver-repo.url>
   </properties>
@@ -38,14 +38,14 @@
     <name>Eclipse foundation</name>
     <url>http://www.eclipse.org</url>
   </organization>
-  
+
   <licenses>
     <license>
       <name>Eclipse Public License - v 1.0</name>
       <url>http://www.eclipse.org/legal/epl-v10.html</url>
     </license>
   </licenses>
-  
+
   <issueManagement>
     <url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=M2E-WTP</url>
     <system>Bugzilla</system>
@@ -55,7 +55,7 @@
     <module>org.eclipse.m2e.wtp.common.tests</module>
     <module>org.eclipse.m2e.wtp.tests</module>
   </modules>
-    
+
   <repositories>
     <repository>
       <id>eclipse</id>
@@ -78,12 +78,12 @@
       <id>m2e-wtp</id>
       <layout>p2</layout>
       <url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}</url>
-    </repository>    
+    </repository>
     <repository>
       <id>orbit</id>
       <layout>p2</layout>
       <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/</url>
-    </repository>    
+    </repository>
 
     <repository>
       <id>RSO-public-group</id>
@@ -96,7 +96,7 @@
       </snapshots>
     </repository>
   </repositories>
-    
+
   <pluginRepositories>
     <pluginRepository>
       <id>RSO-public-group</id>
@@ -141,11 +141,11 @@
             <!-- kill test JVM if tests take more than X seconds to finish -->
             <forkedProcessTimeoutInSeconds>${test.timeout}</forkedProcessTimeoutInSeconds>
           </configuration>
-        </plugin>      
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.5</version>
+          <version>2.6</version>
         </plugin>
       </plugins>
     </pluginManagement>
