@@ -41,6 +41,7 @@ import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.jdt.internal.BuildPathManager;
 import org.eclipse.m2e.tests.common.AbstractMavenProjectTestCase;
+import org.eclipse.m2e.tests.common.ClasspathHelpers;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
@@ -308,4 +309,10 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 	 }
 	 return true;
 	}
+  
+  protected void assertArchiveNameAttribute(IClasspathEntry cpe, String expectedValue) {
+  	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cpe, CLASSPATH_ARCHIVENAME_ATTRIBUTE);
+  	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
+  	assertEquals(expectedValue, archiveNameAttribute.getValue());
+  }
 }

@@ -260,15 +260,10 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     	assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
     } else {
     	assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
-    	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cp[0], CLASSPATH_ARCHIVENAME_ATTRIBUTE);
-    	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
-    	assertEquals("junit-junit-3.8.1.jar", archiveNameAttribute.getValue());
+    	assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
 
     	assertEquals("junit-3.8.1.jar", cp[1].getPath().lastSegment());
-    	archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cp[1], CLASSPATH_ARCHIVENAME_ATTRIBUTE);
-    	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
-    	assertEquals("test-junit-3.8.1.jar", archiveNameAttribute.getValue());
-
+    	assertArchiveNameAttribute(cp[1], "test-junit-3.8.1.jar");
     }
   }
 
@@ -300,11 +295,18 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IClasspathEntry[] cp = container.getClasspathEntries();
 
     assertEquals(4, cp.length);
-    assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
+
     assertEquals("foo.bar-core", cp[1].getPath().lastSegment());
     assertEquals("bar.foo-core", cp[2].getPath().lastSegment());
-    assertEquals("commons-lang-commons-lang-2.4.jar", cp[3].getPath().lastSegment());
-
+    if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
+        assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
+        assertEquals("commons-lang-commons-lang-2.4.jar", cp[3].getPath().lastSegment());
+    } else {
+    	assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
+        assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
+    	assertArchiveNameAttribute(cp[3], "commons-lang-commons-lang-2.4.jar");
+        assertEquals("commons-lang-2.4.jar", cp[3].getPath().lastSegment());
+    }
   }
 
   //@Test
@@ -1925,7 +1927,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     assertEquals(1, cp.length);
     assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", cp[0].getPath().lastSegment());
-    Artifact a = MavenPlugin.getMavenProjectRegistry().getProject(project).getMavenProject().getArtifacts().iterator().next();
+    Artifact a = MavenPlugin.getMavenProjectRegistry().getProject(project).getMavenProject(monitor).getArtifacts().iterator().next();
     assertEquals(a.getFile().getPath(), cp[0].getPath().toOSString());
   }  
 
@@ -2118,7 +2120,15 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IClasspathEntry[] cp = container.getClasspathEntries();
 
     assertEquals(1, cp.length);
-    String expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar";
+    
+    String expectedPath; 
+    if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
+    	expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar";
+    } else {
+    	assertArchiveNameAttribute(cp[0], "MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar");
+    	expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar";
+    }
+   
     String path = cp[0].getPath().toPortableString(); 
     assertTrue("Unexpected path : "+path, path.endsWith(expectedPath));
   }
