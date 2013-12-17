@@ -200,7 +200,7 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
       project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
       waitForJobsToComplete();
       List<IMarker> markers = findErrorMarkers(project);
-      assertTrue("Should not have any markers",markers.isEmpty());
+      assertTrue("Should not have any markers :"+toString(markers),markers.isEmpty());
       
       assertFalse(project.exists(new Path("/target/m2e-wtp/web-resources/META-INF/MANIFEST.MF")));
       assertFalse(project.exists(new Path("/target/m2e-wtp/web-resources/META-INF/maven/")));
