@@ -3,6 +3,6 @@
 <application id="Application_ID">
 	<display-name>ear13</display-name>
 	<module>
-		<ejb>foo.jar</ejb>
+		<java>foo.jar</java>
 	</module>
 </application>

@@ -14,7 +14,7 @@
 				<configuration>
 					<version>6</version>
 					<defaultLibBundleDir>/library</defaultLibBundleDir>
-					<generateApplicationXml>false</generateApplicationXml>
+					<generateApplicationXml>true</generateApplicationXml>
 				</configuration>
 			</plugin>
 		</plugins>

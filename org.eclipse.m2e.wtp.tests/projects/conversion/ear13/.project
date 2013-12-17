@@ -10,11 +10,13 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<!-- we need to ignore application.xml warnings here
 		<buildCommand>
 			<name>org.eclipse.wst.validation.validationbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
+		 -->
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
