@@ -24,10 +24,10 @@
   <name>M2E-WTP-TESTS :: Parent</name>
 
   <properties>
-    <tycho-version>0.18.1</tycho-version>
+    <tycho-version>0.19.0</tycho-version>
     <test.timeout>2400</test.timeout><!--  45 mins -->
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>kepler</eclipse.target>
+    <eclipse.target>luna</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <m2e-repo.url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
