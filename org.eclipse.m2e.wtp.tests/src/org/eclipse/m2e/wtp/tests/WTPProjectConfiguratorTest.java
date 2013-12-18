@@ -133,7 +133,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IFile applicationXml = project.getFile("target/m2e-wtp/ear-resources/META-INF/application.xml");
     assertTrue("application.xml is missing from target/m2e-wtp/ear-resources/META-INF/", applicationXml.exists());
     assertFalse("target/MECLIPSEWTP-205-0.0.1-SNAPSHOT/META-INF/application.xml has been created",
-        project.getFile("target/MECLIPSEWTP-205-0.0.1-SNAPSHOT/META-INF/application.xml").exists());
+    project.getFile("target/MECLIPSEWTP-205-0.0.1-SNAPSHOT/META-INF/application.xml").exists());
   }
 
   @Test
@@ -679,7 +679,8 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IVirtualReference[] references = comp.getReferences();
     assertEquals(1, references.length);
     IVirtualReference snapshot = references[0];
-    assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", snapshot.getArchiveName());
+    //Default uses version (timestamped) instead of baseVersion (-SNAPSHOT). See Bug 424254
+    assertEquals("MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar", snapshot.getArchiveName());
   }
 
   @Test
@@ -2201,6 +2202,22 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertFalse(ejbJar.exists());
   }
 
+  @Test
+  public void test424254_useBaseVersion() throws Exception {
+    IProject ear = importProject("projects/424254/pom.xml");
+    waitForJobsToComplete();
+
+    IVirtualComponent comp = ComponentCore.createComponent(ear);
+    IVirtualReference[] references =comp.getReferences(); 
+    assertEquals(1, references.length);
+    assertEquals("MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar", references[0].getArchiveName());
+
+    updateProject(ear, "baseVersion-pom.xml");
+    
+    references =comp.getReferences(); 
+    assertEquals(1, references.length);
+    assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", references[0].getArchiveName());
+  }
   
   private static String dumpModules(List<Module> modules) {
     if(modules == null)
