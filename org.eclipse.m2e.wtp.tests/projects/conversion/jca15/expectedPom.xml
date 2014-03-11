@@ -26,7 +26,7 @@
         <executions>
           <execution>
             <id>build_jar</id>
-            <phase>process-classes</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>jar</goal>
             </goals>

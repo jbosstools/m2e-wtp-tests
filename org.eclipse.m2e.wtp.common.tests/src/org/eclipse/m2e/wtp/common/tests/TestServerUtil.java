@@ -35,7 +35,6 @@ public class TestServerUtil {
     if (module == null) {
       throw  new IllegalArgumentException(project.getName() + " is not a Server IModule");
     }
-    
     ModuleDelegate d = (ModuleDelegate)module.loadAdapter(ModuleDelegate.class, new NullProgressMonitor());
     if (d == null) {
       throw new NullPointerException("can not find ModuleDelegate for [" + module.getModuleType().getId() + ", " + module.getClass()+ "]");
@@ -77,7 +76,9 @@ public class TestServerUtil {
   }
   
   public static String getPath(IModuleResource resource) {
-    if (resource == null) return null;
+    if (resource == null) {
+		return null;
+	}
     String path = "";
     if (!resource.getModuleRelativePath().isEmpty()) {
       path=resource.getModuleRelativePath()+"/";
@@ -87,7 +88,9 @@ public class TestServerUtil {
   }
   
   private static void walk(IModuleResource[] resources, List<IModuleResource> all) {
-    if (resources == null || resources.length == 0) return;
+    if (resources == null || resources.length == 0) {
+		return;
+	}
     
     for(IModuleResource r : resources) {
       all.add(r);
