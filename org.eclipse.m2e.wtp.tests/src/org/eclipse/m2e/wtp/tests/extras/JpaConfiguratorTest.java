@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
-import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.tests.AbstractWTPTestCase;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -38,6 +37,15 @@ public class JpaConfiguratorTest extends AbstractWTPTestCase {
 		
 	}	
 
+	@Test
+	public void testBrokenComponent() throws Exception {
+		IProject project = importProject( "projects/jpa/broken-component/pom.xml");
+		waitForJobsToComplete();
+		
+		assertIsJpaProject(project, JPA_FACET_VERSION_1_0);
+		assertNoErrors(project);
+		
+	}
 	protected void assertIsJpaProject(IProject project, IProjectFacetVersion expectedJpaVersion) throws Exception {
 		IFacetedProject facetedProject = ProjectFacetsManager.create(project);
 		assertNotNull(project.getName() + " is not a faceted project", facetedProject);
