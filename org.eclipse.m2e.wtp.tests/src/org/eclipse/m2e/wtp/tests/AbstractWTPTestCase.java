@@ -267,7 +267,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     ResolverConfiguration configuration = new ResolverConfiguration();
     configurationManager.enableMavenNature(project, configuration, monitor);
     configurationManager.updateProjectConfiguration(project, monitor);
-    
+
     waitForJobsToComplete();
     project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
     if (waitTime > 0 ) {

@@ -46,15 +46,17 @@ import org.eclipse.jst.j2ee.project.EarUtilities;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.j2ee.web.project.facet.WebFacetUtils;
 import org.eclipse.jst.javaee.application.Application;
-import org.eclipse.jst.javaee.application.Module;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.jdt.internal.BuildPathManager;
 import org.eclipse.m2e.wtp.MavenWtpConstants;
+import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
+import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.util.ComponentUtilities;
@@ -71,7 +73,7 @@ import org.junit.Test;
 
 /**
  * WTPProjectConfiguratorTest
- * 
+ *
  * @author igor
  */
 @SuppressWarnings("restriction")
@@ -133,7 +135,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IFile applicationXml = project.getFile("target/m2e-wtp/ear-resources/META-INF/application.xml");
     assertTrue("application.xml is missing from target/m2e-wtp/ear-resources/META-INF/", applicationXml.exists());
     assertFalse("target/MECLIPSEWTP-205-0.0.1-SNAPSHOT/META-INF/application.xml has been created",
-    project.getFile("target/MECLIPSEWTP-205-0.0.1-SNAPSHOT/META-INF/application.xml").exists());
+        project.getFile("target/MECLIPSEWTP-205-0.0.1-SNAPSHOT/META-INF/application.xml").exists());
   }
 
   @Test
@@ -255,14 +257,14 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     assertEquals(2, cp.length);
     if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-    	assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
-    	assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
+      assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
+      assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
     } else {
-    	assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
-    	assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
+      assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
+      assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
 
-    	assertEquals("junit-3.8.1.jar", cp[1].getPath().lastSegment());
-    	assertArchiveNameAttribute(cp[1], "test-junit-3.8.1.jar");
+      assertEquals("junit-3.8.1.jar", cp[1].getPath().lastSegment());
+      assertArchiveNameAttribute(cp[1], "test-junit-3.8.1.jar");
     }
   }
 
@@ -298,13 +300,13 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("foo.bar-core", cp[1].getPath().lastSegment());
     assertEquals("bar.foo-core", cp[2].getPath().lastSegment());
     if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-        assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
-        assertEquals("commons-lang-commons-lang-2.4.jar", cp[3].getPath().lastSegment());
+      assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
+      assertEquals("commons-lang-commons-lang-2.4.jar", cp[3].getPath().lastSegment());
     } else {
-    	assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
-        assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
-    	assertArchiveNameAttribute(cp[3], "commons-lang-commons-lang-2.4.jar");
-        assertEquals("commons-lang-2.4.jar", cp[3].getPath().lastSegment());
+      assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
+      assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
+      assertArchiveNameAttribute(cp[3], "commons-lang-commons-lang-2.4.jar");
+      assertEquals("commons-lang-2.4.jar", cp[3].getPath().lastSegment());
     }
   }
 
@@ -372,7 +374,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void testMNGECLIPSE688_NonDeployedDependencies() throws Exception {
     IProject[] projects = importProjects("projects/MNGECLIPSE-688", new String[] {"war-optional/pom.xml",
-        "core/pom.xml"}, new ResolverConfiguration());
+    "core/pom.xml"}, new ResolverConfiguration());
     IProject war = projects[0];
     IProject optionalJar = projects[1];
     assertNoErrors(war);
@@ -452,7 +454,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
       IVirtualReference[] references = comp.getReferences();
       assertEquals(1, references.length);
       IVirtualReference junit = references[0];
-      //FIXME Test fail on WTP Galileo, as WTP adds an extra /lib prefix on the archivename.  
+      //FIXME Test fail on WTP Galileo, as WTP adds an extra /lib prefix on the archivename.
       //assertEquals("junit-3.8.1.jar", junit.getArchiveName());//Helios WTP works fine here
       assertTrue("junit-3.8.1.jar expected", junit.getArchiveName().endsWith("junit-3.8.1.jar"));
 
@@ -521,7 +523,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
         "projects/MNGECLIPSE-688/", //
         new String[] {"pom14-1/pom.xml", "pom14-1/ear14-1/pom.xml", "pom14-1/war23-1/pom.xml",
             "pom14-1/war23-2/pom.xml", "pom14-1/ejb21-1/pom.xml", "pom14-1/core-1/pom.xml"},
-        new ResolverConfiguration());
+            new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -552,7 +554,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   public void testMNGECLIPSE1119_OptionalProjectDependencies() throws Exception {
     IProject[] projects = importProjects("projects/MNGECLIPSE-1119/", //
         new String[] {"pom.xml", "MNGECLIPSE-1119-ear/pom.xml", "MNGECLIPSE-1119-web/pom.xml",
-            "MNGECLIPSE-1119-util/pom.xml", "MNGECLIPSE-1119-ejb/pom.xml"}, new ResolverConfiguration());
+        "MNGECLIPSE-1119-util/pom.xml", "MNGECLIPSE-1119-ejb/pom.xml"}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -570,33 +572,33 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     }
   }
 
-//  @Test
-//  public void testMNGECLIPSE597() throws Exception {
-//    IProject[] projects = importProjects("projects/MNGECLIPSE-597", 
-//        new String[] {"DWPMain/pom.xml", "DWPDependency/pom.xml", }, 
-//        new ResolverConfiguration());
-//
-//    waitForJobsToComplete();
-//    assertEquals(2, projects.length);
-//    IProject dep = projects[1];
-//    IProject main = projects[0];
-//    
-//    assertNoErrors(main);
-//    assertNoErrors(dep);
-//
-//    IFacetedProject mainWar = ProjectFacetsManager.create(main);
-//    assertNotNull(mainWar);
-//    assertTrue(mainWar.hasProjectFacet(WebFacetUtils.WEB_FACET));
-//
-//    IFacetedProject depWar = ProjectFacetsManager.create(dep);
-//    assertNotNull(depWar);
-//    assertTrue(depWar.hasProjectFacet(WebFacetUtils.WEB_FACET));
-//
-//    IVirtualComponent comp = ComponentCore.createComponent(main);
-//    IVirtualReference[] references = comp.getReferences();
-//    IVirtualReference depRef = references[0];
-//    assertEquals(dep, depRef.getReferencedComponent().getProject());
-//  }
+  //  @Test
+  //  public void testMNGECLIPSE597() throws Exception {
+  //    IProject[] projects = importProjects("projects/MNGECLIPSE-597",
+  //        new String[] {"DWPMain/pom.xml", "DWPDependency/pom.xml", },
+  //        new ResolverConfiguration());
+  //
+  //    waitForJobsToComplete();
+  //    assertEquals(2, projects.length);
+  //    IProject dep = projects[1];
+  //    IProject main = projects[0];
+  //
+  //    assertNoErrors(main);
+  //    assertNoErrors(dep);
+  //
+  //    IFacetedProject mainWar = ProjectFacetsManager.create(main);
+  //    assertNotNull(mainWar);
+  //    assertTrue(mainWar.hasProjectFacet(WebFacetUtils.WEB_FACET));
+  //
+  //    IFacetedProject depWar = ProjectFacetsManager.create(dep);
+  //    assertNotNull(depWar);
+  //    assertTrue(depWar.hasProjectFacet(WebFacetUtils.WEB_FACET));
+  //
+  //    IVirtualComponent comp = ComponentCore.createComponent(main);
+  //    IVirtualReference[] references = comp.getReferences();
+  //    IVirtualReference depRef = references[0];
+  //    assertEquals(dep, depRef.getReferencedComponent().getProject());
+  //  }
 
   @Test
   public void testMNGECLIPSE965_fileNames() throws Exception {
@@ -634,7 +636,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("junit-junit-3.8.1.jar", junitRef.getArchiveName());
 
   }
-  
+
   @Test
   public void testMECLIPSEWTP233_EarSourceSeparator() throws Exception {
     IProject ear = importProject("projects/MECLIPSEWTP-233/pom.xml");
@@ -652,7 +654,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IProject project = importProject("projects/MNGECLIPSE-984/pom.xml", new ResolverConfiguration());
     waitForJobsToComplete();
 
-    //Web Project configuration failed because Web 2.5 projects need Java 1.5 
+    //Web Project configuration failed because Web 2.5 projects need Java 1.5
     List<IMarker> markers = findErrorMarkers(project);
     assertEquals(2, markers.size());
     assertHasMarker("One or more constraints have not been satisfied.", markers);
@@ -688,7 +690,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     IProject[] projects = importProjects("projects/MNGECLIPSE-1627/", //
         new String[] {"ear/pom.xml", "utility1/pom.xml", "utility2/pom.xml", "war-fullskinny/pom.xml",
-            "war-mixedskinny/pom.xml",}, new ResolverConfiguration());
+        "war-mixedskinny/pom.xml",}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -785,7 +787,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     classpath = mf2.getMainAttributes().getValue(Attributes.Name.CLASS_PATH);
     assertTrue(classpath.contains(utilityRef1.getArchiveName()));
     assertTrue(classpath.contains(utilityRef2.getArchiveName()));
-    //assertFalse(classpath.contains(utilityRef2.getArchiveName())); 
+    //assertFalse(classpath.contains(utilityRef2.getArchiveName()));
     assertTrue(classpath.contains("commons-lang-2.4.jar"));//Maven manifest contains all entries!!!
     //assertFalse(classpath.contains("commons-collections-2.0.jar"));
     assertTrue(classpath.contains("commons-collections-2.0.jar"));//Maven manifest contains all entries!!!
@@ -816,7 +818,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     IProject[] projects = importProjects("projects/deployment-descriptors/", //
         new String[] {"javaEE/pom.xml", "javaEE/ear/pom.xml", "javaEE/core/pom.xml", "javaEE/ejb/pom.xml",
-            "javaEE/war/pom.xml"}, new ResolverConfiguration());
+    "javaEE/war/pom.xml"}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -860,8 +862,8 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals(2, edit.getApplication().getSecurityRoles().size());
 
     /* TODO investigate why the rest of the test fails randomly
-    updateProject(ear, "pom.step2.xml", 2000);     
-    
+    updateProject(ear, "pom.step2.xml", 2000);
+
     app = (Application)ModelProviderManager.getModelProvider(ear).getModelObject();
     assertEquals(dumpModules(app.getModules()),2,app.getModules().size());
     coreModule = app.getFirstModule(coreRef.getArchiveName());
@@ -870,14 +872,14 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     webModule = app.getFirstModule(warRef.getArchiveName());
     assertNotNull("missing webmodule "+warRef.getArchiveName(),webModule);
     assertEquals("/war-root",webModule.getWeb().getContextRoot());
-    
+
     ejbModule = app.getFirstModule(ejbRef.getArchiveName());
     assertNotNull("missing ejbModule "+ejbRef.getArchiveName(),ejbModule);
     assertEquals("altdd-ejb.jar",ejbModule.getAltDd());
 
     roles = app.getSecurityRoles();
     assertEquals(3, roles.size());
-    */
+     */
   }
 
   @Test
@@ -936,13 +938,13 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertTrue(ejbModule.isEjbModule());
     assertNotNull("missing ejbModule "+ejbRef.getArchiveName(),ejbModule);
     assertNull(ejbModule.getAltDD());
-    
+
     List<SecurityRole> roles = app.getSecurityRoles();
     assertNotNull(roles);
     assertEquals(2, roles.size());
 
-    updateProject(ear, "pom.step2.xml");     
-    
+    updateProject(ear, "pom.step2.xml");
+
     app = (org.eclipse.jst.j2ee.application.Application)ModelProviderManager.getModelProvider(ear).getModelObject();
     assertEquals(2,app.getModules().size());
     coreModule = app.getFirstModule(coreRef.getArchiveName());
@@ -951,14 +953,14 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     webModule = app.getFirstModule(warRef.getArchiveName());
     assertNotNull("missing webmodule "+warRef.getArchiveName(),webModule);
     assertEquals("/war-root",((WebModule)webModule).getContextRoot());
-    
+
     ejbModule = app.getFirstModule(ejbRef.getArchiveName());
     assertNotNull("missing ejbModule "+ejbRef.getArchiveName(),ejbModule);
     assertEquals("altdd-ejb.jar",ejbModule.getAltDD());
 
     roles = app.getSecurityRoles();
     assertEquals(3, roles.size());
-    */
+     */
   }
 
   @Test
@@ -986,10 +988,10 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
       Application app1 = (Application) ModelProviderManager.getModelProvider(ear1).getModelObject();
       assertEquals(2, app1.getModules().size());
       assertNotNull("missing jarmodule for C", app1.getFirstModule("A-0.0.1-SNAPSHOT.jar"));
-      assertNotNull("missing webmodule for C", app1.getFirstModule("B-0.0.1-SNAPSHOT.war"));//EAR should not use finalName 
+      assertNotNull("missing webmodule for C", app1.getFirstModule("B-0.0.1-SNAPSHOT.war"));//EAR should not use finalName
 
-      assertFalse(ear2.getFile(applicationXmlRelativePath).exists());// application.xml is not created as per maven-ear-plugin configuration 
-      //    If maven doesn't generate application.xml, the Application app2 will be empty, since WTP's API is not used     
+      assertFalse(ear2.getFile(applicationXmlRelativePath).exists());// application.xml is not created as per maven-ear-plugin configuration
+      //    If maven doesn't generate application.xml, the Application app2 will be empty, since WTP's API is not used
       //    Application app2 = (Application)ModelProviderManager.getModelProvider(ear2).getModelObject();
       //    assertEquals(2,app2.getModules().size());
       //    assertNotNull("missing jarmodule for D",app2.getFirstModule("A.jar"));
@@ -999,7 +1001,8 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     }
   }
 
-  //Lars K�dderitzsch test case from https://issues.sonatype.org/browse/MNGECLIPSE-1644
+  // Lars K�dderitzsch test case from
+  // https://issues.sonatype.org/browse/MNGECLIPSE-1644
   @Test
   public void testMNGECLIPSE1644_contextRoot() throws Exception {
     try {
@@ -1034,7 +1037,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
   @Test
   public void testMNGECLIPSE2145_finalNames() throws Exception {
-    //project finalNames are no longer used in EAR deployment, according to maven-ear-plugin 2.5 
+    //project finalNames are no longer used in EAR deployment, according to maven-ear-plugin 2.5
     IProject[] projects = importProjects("projects/MNGECLIPSE-2145/testcase", //
         new String[] {"pom.xml", "ear/pom.xml", "war/pom.xml", "jar/pom.xml",}, new ResolverConfiguration());
 
@@ -1161,7 +1164,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IProject web = projects[2];
     IProject ejb = projects[3];
     IProject ear = projects[4];
-    //Building project as tests crashes, complaining about /MNGECLIPSE-1878/MNGECLIPSE-1878-ejb/target/classes later, on project update 
+    //Building project as tests crashes, complaining about /MNGECLIPSE-1878/MNGECLIPSE-1878-ejb/target/classes later, on project update
     ejb.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
 
     waitForJobsToComplete();
@@ -1200,7 +1203,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
       assertEquals(Arrays.toString(rawClasspath), 4, rawClasspath.length);
       assertEquals("/MNGECLIPSE-1878-web/src/main/java", rawClasspath[0].getPath().toString());
       assertEquals("/MNGECLIPSE-1878-web/src/test/java", rawClasspath[1].getPath().toString());
-       assertEquals(JRE_CONTAINER_J2SE_1_5, rawClasspath[2].getPath().toString());
+      assertEquals(JRE_CONTAINER_J2SE_1_5, rawClasspath[2].getPath().toString());
       assertEquals(MAVEN_CLASSPATH_CONTAINER, rawClasspath[3].getPath().toString());
 
       assertNull(getWebLibClasspathContainer(webProject));
@@ -1226,7 +1229,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   public void testMNGECLIPSE1978_Javaee6Support() throws Exception {
     IProject[] projects = importProjects("projects/MNGECLIPSE-1978/", new String[] {"javaee6-parent/pom.xml",
         "javaee6-parent/javaee6-ejb/pom.xml", "javaee6-parent/javaee6-web/pom.xml",
-        "javaee6-parent/javaee6-ear/pom.xml"}, new ResolverConfiguration());
+    "javaee6-parent/javaee6-ear/pom.xml"}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -1277,7 +1280,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     IProject[] projects = importProjects("projects/bundleFileNames/", //
         new String[] {"javaEE/pom.xml", "javaEE/ear/pom.xml", "javaEE/core/pom.xml", "javaEE/ejb/pom.xml",
-            "javaEE/war/pom.xml"}, new ResolverConfiguration());
+    "javaEE/war/pom.xml"}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -1402,24 +1405,24 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     //Let's spice it up : use a profile to change the web.xml, which incidentally will trigger a facet change
     /* FIXME this test now fails with the new mavenarchiver dependency. But smoke testing this works fine.
-    updateProject(web, "useProfileForCustomWebXml.xml");    
-    assertNoErrors(web);    
+    updateProject(web, "useProfileForCustomWebXml.xml");
+    assertNoErrors(web);
 
     facetedProject = ProjectFacetsManager.create(web);
     assertNotNull(facetedProject);
     assertEquals(WebFacetUtils.WEB_24, facetedProject.getInstalledVersion(WebFacetUtils.WEB_FACET));
     assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
     assertNoErrors(web);
-    
+
     webResources = rootWeb.getUnderlyingResources();
     assertEquals(2, webResources.length);
     assertEquals(web.getFolder("/src/main/webapp"), webResources[1]);
-    
+
     webXmlFiles = virtualWebXml.getUnderlyingFiles();
     assertEquals("found "+toString(webXmlFiles),  1, webXmlFiles.length);
-    //Check non default web.xml 
+    //Check non default web.xml
     assertEquals(web.getFile("/profile/web.xml"), webXmlFiles[0]);
-    */
+     */
   }
 
   @Test
@@ -1494,29 +1497,29 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("junit-3.8.1.jar", mavenContainerEntries[4].getPath().lastSegment());
     assertEquals("utility2", mavenContainerEntries[5].getPath().lastSegment());
   }
-  
+
   @Test
   public void testMECLIPSEWTP220_removeApplicationXml() throws Exception {
 
-      IProject ear = importProject("projects/MECLIPSEWTP-220/pom.xml");
-      ear.build(IncrementalProjectBuilder.AUTO_BUILD, monitor);
-      waitForJobsToComplete();
-      IFacetedProject fpEar = ProjectFacetsManager.create(ear);
-      assertNotNull(fpEar);
-      assertEquals(DEFAULT_EAR_FACET, fpEar.getInstalledVersion(EAR_FACET));
+    IProject ear = importProject("projects/MECLIPSEWTP-220/pom.xml");
+    ear.build(IncrementalProjectBuilder.AUTO_BUILD, monitor);
+    waitForJobsToComplete();
+    IFacetedProject fpEar = ProjectFacetsManager.create(ear);
+    assertNotNull(fpEar);
+    assertEquals(DEFAULT_EAR_FACET, fpEar.getInstalledVersion(EAR_FACET));
 
-      IFile applicationXml = ear.getFile("src/main/application/META-INF/application.xml");
-      assertFalse(applicationXml + " shouldn't exist",applicationXml.exists());
+    IFile applicationXml = ear.getFile("src/main/application/META-INF/application.xml");
+    assertFalse(applicationXml + " shouldn't exist",applicationXml.exists());
 
-      IFile generatedApplicationXml = ear.getFile("target/m2e-wtp/ear-resources/META-INF/application.xml");
-      assertTrue(generatedApplicationXml + " is missing", generatedApplicationXml.exists());
+    IFile generatedApplicationXml = ear.getFile("target/m2e-wtp/ear-resources/META-INF/application.xml");
+    assertTrue(generatedApplicationXml + " is missing", generatedApplicationXml.exists());
   }
-  
+
   @Test
   public void testMECLIPSEWTP73_EjbClientInLib_JavaEE5() throws Exception {
     IProject[] projects = importProjects("projects/MECLIPSEWTP-73/", //
         new String[] {"ear5-with-ejb-client/pom.xml", "ear5-with-ejb-client/ear/pom.xml",
-            "ear5-with-ejb-client/ejb/pom.xml", "ear5-with-ejb-client/war/pom.xml"}, new ResolverConfiguration());
+        "ear5-with-ejb-client/ejb/pom.xml", "ear5-with-ejb-client/war/pom.xml"}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -1553,7 +1556,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
       IProject[] projects = importProjects("projects/MECLIPSEWTP-73/", //
           new String[] {"ear14-with-ejb-client/pom.xml", "ear14-with-ejb-client/ear/pom.xml",
-              "ear14-with-ejb-client/ejb/pom.xml", "ear14-with-ejb-client/war/pom.xml"}, new ResolverConfiguration());
+          "ear14-with-ejb-client/ejb/pom.xml", "ear14-with-ejb-client/war/pom.xml"}, new ResolverConfiguration());
 
       waitForJobsToComplete();
 
@@ -1592,7 +1595,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     IProject[] projects = importProjects("projects/MECLIPSEWTP-72/", //
         new String[] {"ear-with-skinny-war/pom.xml", "ear-with-skinny-war/ear/pom.xml",
-            "ear-with-skinny-war/war/pom.xml"}, new ResolverConfiguration());
+    "ear-with-skinny-war/war/pom.xml"}, new ResolverConfiguration());
 
     waitForJobsToComplete();
 
@@ -1685,39 +1688,39 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void testMECLIPSEWTP58_generateApplicationXmlInBuildDir() throws Exception {
 
-	IProject[] projects = importProjects("projects/deployment-descriptors/", //
-			new String[] {"javaEE/pom.xml", "javaEE/ear/pom.xml", "javaEE/core/pom.xml", "javaEE/ejb/pom.xml",
-	"javaEE/war/pom.xml"}, new ResolverConfiguration());
-	
-	waitForJobsToComplete();
-	
-	assertEquals(5, projects.length);
-	IProject ear = projects[1];
-	IProject core = projects[2];
-	IProject ejb = projects[3];
-	IProject war = projects[4];
-	
-	assertNoErrors(core);
-	assertNoErrors(ejb);
-	assertNoErrors(war);
-	assertNoErrors(ear);
-	
-	IFile applicationXmlInBuidDir = ear.getFile("target/" + M2E_WTP_FOLDER + "/" + EAR_RESOURCES_FOLDER
-			+ "/META-INF/application.xml");
-	assertTrue(applicationXmlInBuidDir.getFullPath() + " is missing", applicationXmlInBuidDir.exists());
-	
-	IFile applicationXmlInSourceDir = ear.getFile("src/main/application/META-INF/application.xml");
-	assertFalse(applicationXmlInSourceDir.getFullPath() + " shouldn't exist", applicationXmlInSourceDir.exists());
-	
-	try {
-		useBuildDirforGeneratingFiles(ear, false);
-		updateProject(ear);
-		
-		assertFalse(applicationXmlInBuidDir.getFullPath() + " should have been deleted", applicationXmlInBuidDir.exists());
-		assertTrue(applicationXmlInSourceDir.getFullPath() + " should have been created",applicationXmlInSourceDir.exists());
-	} finally {
-		useBuildDirforGeneratingFiles(ear, true);
-	}
+    IProject[] projects = importProjects("projects/deployment-descriptors/", //
+        new String[] {"javaEE/pom.xml", "javaEE/ear/pom.xml", "javaEE/core/pom.xml", "javaEE/ejb/pom.xml",
+    "javaEE/war/pom.xml"}, new ResolverConfiguration());
+
+    waitForJobsToComplete();
+
+    assertEquals(5, projects.length);
+    IProject ear = projects[1];
+    IProject core = projects[2];
+    IProject ejb = projects[3];
+    IProject war = projects[4];
+
+    assertNoErrors(core);
+    assertNoErrors(ejb);
+    assertNoErrors(war);
+    assertNoErrors(ear);
+
+    IFile applicationXmlInBuidDir = ear.getFile("target/" + M2E_WTP_FOLDER + "/" + EAR_RESOURCES_FOLDER
+        + "/META-INF/application.xml");
+    assertTrue(applicationXmlInBuidDir.getFullPath() + " is missing", applicationXmlInBuidDir.exists());
+
+    IFile applicationXmlInSourceDir = ear.getFile("src/main/application/META-INF/application.xml");
+    assertFalse(applicationXmlInSourceDir.getFullPath() + " shouldn't exist", applicationXmlInSourceDir.exists());
+
+    try {
+      useBuildDirforGeneratingFiles(ear, false);
+      updateProject(ear);
+
+      assertFalse(applicationXmlInBuidDir.getFullPath() + " should have been deleted", applicationXmlInBuidDir.exists());
+      assertTrue(applicationXmlInSourceDir.getFullPath() + " should have been created",applicationXmlInSourceDir.exists());
+    } finally {
+      useBuildDirforGeneratingFiles(ear, true);
+    }
   }
 
   @Test
@@ -1788,7 +1791,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void testMECLIPSEWTP202_includeLibInApplicationXml() throws Exception {
     IProject[] projects = importProjects("projects/MECLIPSEWTP-202/parent1/", new String[] {"pom.xml", "ear/pom.xml",
-        "ejb/pom.xml"}, new ResolverConfiguration());
+    "ejb/pom.xml"}, new ResolverConfiguration());
     waitForJobsToComplete();
     IProject ear = projects[1];
     ear.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -1817,7 +1820,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void testMECLIPSEWTP197_excludedJarModules() throws Exception {
     IProject[] projects = importProjects("projects/MECLIPSEWTP-197/parent1/", new String[] {"pom.xml", "ear/pom.xml",
-        "ejb/pom.xml"}, new ResolverConfiguration());
+    "ejb/pom.xml"}, new ResolverConfiguration());
     waitForJobsToComplete();
     IProject ear = projects[1];
     ear.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -1866,7 +1869,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IProject ear = importProject("projects/MECLIPSEWTP-212/pom.xml");
     waitForJobsToComplete();
     IVirtualComponent earComp;
-    
+
     earComp= ComponentCore.createComponent(ear);
     assertNotNull("EAR component is null" , earComp);
     assertEquals("MECLIPSEWTP-212-0.0.1-SNAPSHOT", earComp.getDeployedName());
@@ -1875,19 +1878,19 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     earComp= ComponentCore.createComponent(ear);
     assertNotNull("EAR component is null" , earComp);
     assertEquals("ear", earComp.getDeployedName());
-    
+
     updateProject(ear, "pom3.xml");
     earComp= ComponentCore.createComponent(ear);
     assertNotNull("EAR component is null" , earComp);
     assertEquals("ear-1.0", earComp.getDeployedName());
   }
-  
+
   @Test
   public void testMECLIPSEWTP213_removeUtilityFacet() throws Exception {
     testRemoveConflictingFacets("ejbPom.xml", WTPProjectsUtil.EJB_FACET);
     testRemoveConflictingFacets("warPom.xml", WTPProjectsUtil.DYNAMIC_WEB_FACET);
   }
-  
+
   protected void testRemoveConflictingFacets(String newPom, IProjectFacet expectedFacet) throws Exception {
     String utilityProjectName = "chimera";
     deleteProject(utilityProjectName);
@@ -1896,18 +1899,18 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IProject chimera = createExisting(utilityProjectName, "projects/MECLIPSEWTP-213/"+utilityProjectName);
     waitForJobsToComplete();
     assertNoErrors(chimera);
-    
+
     IFacetedProject facetedProject = ProjectFacetsManager.create(chimera);
     assertNotNull(facetedProject);
     assertEquals(2, facetedProject.getProjectFacets().size());
     assertTrue(facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_FACET));
     assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
-    
+
     updateProject(chimera, newPom);
     waitForJobsToComplete();
-    
+
     assertNoErrors(chimera);
-    
+
     facetedProject = ProjectFacetsManager.create(chimera);
     assertNotNull(facetedProject);
     assertFalse("Utility facet should be missing", facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_FACET));
@@ -1927,7 +1930,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", cp[0].getPath().lastSegment());
     Artifact a = MavenPlugin.getMavenProjectRegistry().getProject(project).getMavenProject(monitor).getArtifacts().iterator().next();
     assertEquals(a.getFile().getPath(), cp[0].getPath().toOSString());
-  }  
+  }
 
   @Test
   public void testMECLIPSEWTP224_customArtifactTypeMapping() throws Exception {
@@ -1950,7 +1953,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertNoErrors(ear);
 
     IVirtualComponent comp = ComponentCore.createComponent(ear);
-    IVirtualReference[] references =comp.getReferences(); 
+    IVirtualReference[] references =comp.getReferences();
     assertEquals(4, references.length);
     assertEquals("ejb-0.0.1-SNAPSHOT.jar", references[0].getArchiveName());
     assertEquals("core-0.0.1-SNAPSHOT.jar", references[1].getArchiveName());
@@ -1974,29 +1977,29 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IProject ejb = projects[3];
     IProject war = projects[4];
 
-    String ejbClientWarning = NLS.bind(Messages.markers_unsupported_dependencies_warning, "ejb", "ejb-client"); 
-    String testJarWarning = NLS.bind(Messages.markers_unsupported_dependencies_warning, "core", "test-jar"); 
+    String ejbClientWarning = NLS.bind(Messages.markers_unsupported_dependencies_warning, "ejb", "ejb-client");
+    String testJarWarning = NLS.bind(Messages.markers_unsupported_dependencies_warning, "core", "test-jar");
 
     List<IMarker> markers = findMarkers(ear, IMarker.SEVERITY_WARNING);
     assertEquals(toString(markers), 2, markers.size());
     assertHasMarker(ejbClientWarning, markers);
     assertHasMarker(testJarWarning, markers);
-    
+
     markers = findMarkers(war, IMarker.SEVERITY_WARNING);
     assertEquals(toString(markers), 2, markers.size());
     assertHasMarker(ejbClientWarning, markers);
-    assertHasMarker(testJarWarning, markers);        
+    assertHasMarker(testJarWarning, markers);
 
     markers = findMarkers(ejb, IMarker.SEVERITY_WARNING);
     assertEquals(toString(markers), 1, markers.size());
-    assertHasMarker(testJarWarning, markers);        
+    assertHasMarker(testJarWarning, markers);
 
     assertEquals("parent project shouldn't have any warning", 0, findMarkers(parent, IMarker.SEVERITY_WARNING).size());
     assertEquals("core project shouldn't have any warning", 0, findMarkers(core, IMarker.SEVERITY_WARNING).size());
   }
 
-  
-  
+
+
   @Test
   public void testMECLIPSEWTP223_warNameAsContextRoot() throws Exception {
     IProject project = importProject("projects/MECLIPSEWTP-223/pom.xml");
@@ -2004,7 +2007,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertNoErrors(project);
     assertEquals("webapp", J2EEProjectUtilities.getServerContextRoot(project));
   }
-  
+
   @Test
   public void testMECLIPSEWTP214_exclusionPatterns() throws Exception {
     IProject project = importProject("projects/MECLIPSEWTP-214/pom.xml");
@@ -2013,7 +2016,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     List<IMarker> severityMarkers = findMarkers(project, IMarker.SEVERITY_WARNING);
     String warning = NLS.bind(Messages.markers_inclusion_patterns_problem, "warSourceIncludes");
     assertHasMarker(warning, severityMarkers);
-    
+
     IVirtualComponent comp = ComponentCore.createComponent(project);
     Properties p = comp.getMetaProperties();
     assertEquals("packagingIncludes1,packagingIncludes2", p.get(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS));
@@ -2021,7 +2024,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     //Remove the warning
     updateProject(project, "pom2.xml");
-    
+
     comp = ComponentCore.createComponent(project);
     severityMarkers = findMarkers(project, IMarker.SEVERITY_WARNING);
     assertMissingMarker(warning, severityMarkers);
@@ -2029,9 +2032,9 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     p = comp.getMetaProperties();
     assertEquals("warSourceIncludes1,warSourceIncludes2", p.get(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS));
     assertEquals("", p.get(MavenWtpConstants.COMPONENT_EXCLUSION_PATTERNS));
-    
-  }  
-  
+
+  }
+
   @Test
   public void testMECLIPSEWTP221_exclusionPatterns() throws Exception {
     IProject project = importProject("projects/MECLIPSEWTP-221/pom.xml");
@@ -2039,7 +2042,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertNoErrors(project);
     List<IMarker> severityMarkers = findMarkers(project, IMarker.SEVERITY_WARNING);
     assertHasMarker(NLS.bind(Messages.markers_inclusion_patterns_problem, "earSourceIncludes"), severityMarkers);
-    
+
     IVirtualComponent comp = ComponentCore.createComponent(project);
     Properties p = comp.getMetaProperties();
     assertEquals("packagingIncludes1,packagingIncludes2", p.get(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS));
@@ -2047,7 +2050,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     //Remove the warning
     updateProject(project, "pom2.xml");
-    
+
     comp = ComponentCore.createComponent(project);
     severityMarkers = findMarkers(project, IMarker.SEVERITY_WARNING);
     assertEquals(toString(severityMarkers), 0, severityMarkers.size());
@@ -2055,9 +2058,9 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     p = comp.getMetaProperties();
     assertEquals("earSourceIncludes1,earSourceIncludes2", p.get(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS));
     assertEquals("", p.get(MavenWtpConstants.COMPONENT_EXCLUSION_PATTERNS));
-    
-  }  
-  
+
+  }
+
 
   @Test
   public void testMECLIPSEWTP227_invalidResourceInUtility() throws Exception {
@@ -2066,10 +2069,10 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     waitForJobsToComplete();
     IProject web = projects[1];
     IProject jar = projects[2];
-    
+
     assertNoErrors(web);
     assertNoErrors(jar);
-    
+
     IFacetedProject jarFp = ProjectFacetsManager.create(jar);
     assertNotNull(jar.getName() + " is not a faceted project", jarFp);
 
@@ -2077,32 +2080,32 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   }
 
   public void test384011_outsideResources() throws Exception {
-	 IProject project = importProject("projects/384011/war/pom.xml");
-	 waitForJobsToComplete();
-	 assertNoErrors(project);
+    IProject project = importProject("projects/384011/war/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(project);
   }
-  
+
   public void test385229_removeStaleReference() throws Exception {
     IProject[] projects = importProjects("projects/385229/parent", //
-            new String[] {"pom.xml",  "util/pom.xml", "war/pom.xml"}, new ResolverConfiguration());
-    
+        new String[] {"pom.xml",  "util/pom.xml", "war/pom.xml"}, new ResolverConfiguration());
+
     waitForJobsToComplete();
     IProject util = projects[1];
     IProject war = projects[2];
-    
+
     assertNoErrors(war);
     assertNoErrors(util);
-    
+
     IVirtualComponent warComp = ComponentCore.createComponent(war);
     Map<String, Object> options = new HashMap<String, Object>(1);
     options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, WTPProjectsUtil.DYN_REQUESTED_REFERENCE_TYPE);
     IVirtualReference[] refs = warComp.getReferences(options);
     assertEquals(1, refs.length);
-    
+
     util.close(monitor);
     waitForJobsToComplete();
     assertNoErrors(war);
-    
+
     refs = warComp.getReferences(options);
     assertEquals("util project reference was not removed", 0, refs.length);
   }
@@ -2118,16 +2121,16 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IClasspathEntry[] cp = container.getClasspathEntries();
 
     assertEquals(1, cp.length);
-    
-    String expectedPath; 
+
+    String expectedPath;
     if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-    	expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar";
+      expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar";
     } else {
-    	assertArchiveNameAttribute(cp[0], "MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar");
-    	expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar";
+      assertArchiveNameAttribute(cp[0], "MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar");
+      expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar";
     }
-   
-    String path = cp[0].getPath().toPortableString(); 
+
+    String path = cp[0].getPath().toPortableString();
     assertTrue("Unexpected path : "+path, path.endsWith(expectedPath));
   }
 
@@ -2150,18 +2153,18 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     ProjectImportConfiguration importConfiguration = new ProjectImportConfiguration(configuration);
     importConfiguration.setProjectNameTemplate("[groupId].[artifactId]");
 
-    importProject("projects/397173/pom.xml"); 
+    importProject("projects/397173/pom.xml");
     //waitForJobsToComplete();
     importProject("foo.utility", "projects/397173/foo/", importConfiguration);
     //waitForJobsToComplete();
     importProject("bar.utility", "projects/397173/bar/", importConfiguration);
     //waitForJobsToComplete();
-    IProject web = importProject("projects/397173/web/pom.xml"); 
+    IProject web = importProject("projects/397173/web/pom.xml");
     waitForJobsToComplete();
     assertNoErrors(web);
-    
+
     IVirtualComponent warComponent = ComponentCore.createComponent(web);
-    
+
     assertNotNull(warComponent);
     IVirtualReference[] references = warComponent.getReferences();
     assertEquals(2, references.length);
@@ -2173,20 +2176,20 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   @Test
   public void test397173_DuplicateProjectArtifactId2() throws Exception {
 
-    IProject[] projects = importProjects("projects/397173/", new String[] {"pom.xml", "web2/pom.xml", "junit/pom.xml"}, new ResolverConfiguration()); 
-    IProject web = projects[1]; 
+    IProject[] projects = importProjects("projects/397173/", new String[] {"pom.xml", "web2/pom.xml", "junit/pom.xml"}, new ResolverConfiguration());
+    IProject web = projects[1];
     waitForJobsToComplete();
     assertNoErrors(web);
-    
+
     IVirtualComponent warComponent = ComponentCore.createComponent(web);
-    
+
     assertNotNull(warComponent);
     IVirtualReference[] references = warComponent.getReferences();
     assertEquals(2, references.length);
     assertEquals("junit-3.8.1.jar", warComponent.getReferences()[0].getArchiveName());
     assertEquals("junit-junit-3.8.1.jar", warComponent.getReferences()[1].getArchiveName());
   }
-  
+
 
   @Test
   public void test419734_invalidResourcesEjb() throws Exception {
@@ -2208,17 +2211,17 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     waitForJobsToComplete();
 
     IVirtualComponent comp = ComponentCore.createComponent(ear);
-    IVirtualReference[] references =comp.getReferences(); 
+    IVirtualReference[] references =comp.getReferences();
     assertEquals(1, references.length);
     assertEquals("MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar", references[0].getArchiveName());
 
     updateProject(ear, "baseVersion-pom.xml");
-    
-    references =comp.getReferences(); 
+
+    references =comp.getReferences();
     assertEquals(1, references.length);
     assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", references[0].getArchiveName());
   }
-  
+
   @Test
   public void test431729() throws Exception {
 
@@ -2226,7 +2229,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     waitForJobsToComplete();
     IProject war = importProject("projects/431729/war/pom.xml");
     waitForJobsToComplete();
-    
+
     assertNoErrors(war);
 
     IFacetedProject fpWar = ProjectFacetsManager.create(war);
@@ -2241,23 +2244,103 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals(JRE_CONTAINER_J2SE_1_5, rawClasspath[2].getPath().toString());
     assertEquals(MAVEN_CLASSPATH_CONTAINER, rawClasspath[3].getPath().toString());
   }
-  
-  private static String dumpModules(List<Module> modules) {
-    if(modules == null)
-      return "Null modules";
-    StringBuilder sb = new StringBuilder("[");
-    boolean firstModule = true;
-    for(Module m : modules) {
-      if(firstModule) {
-        firstModule = false;
-      } else {
-        sb.append(",");
-      }
-      sb.append(m.getUri());
+
+
+  @Test
+  public void test409856_disableM2eWtp_War() throws Exception {
+    IMavenWtpPreferencesManager prefMgr = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
+    IMavenWtpPreferences prefs = prefMgr.getWorkspacePreferences();
+    boolean originalState = prefs.isEnabled();
+    IProject project;
+    try {
+      prefs.setEnabled(false);
+      prefMgr.savePreferences(prefs, null);
+      project = importProject("projects/jsf/jsf-webxml/pom.xml");
+      waitForJobsToComplete();
+      assertNoErrors(project);
+      IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+      assertNull(project.getName() + " should not be a faceted project", facetedProject);
+
+      prefs.setEnabled(true);
+      prefMgr.savePreferences(prefs, null);
+      updateProject(project);
+      facetedProject = ProjectFacetsManager.create(project);
+      assertNotNull(project.getName() + " is not a faceted project", facetedProject);
+      assertTrue(facetedProject.hasProjectFacet(WebFacetUtils.WEB_FACET));
+      assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
+
+    } finally {
+      prefs.setEnabled(originalState);
+      prefMgr.savePreferences(prefs, null);
     }
-    sb.append("]");
-    return sb.toString();
   }
 
-  
+
+  @Test
+  public void test409856_disableM2eWtp_Ear() throws Exception {
+    IMavenWtpPreferencesManager prefMgr = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
+    IMavenWtpPreferences prefs = prefMgr.getWorkspacePreferences();
+    boolean originalState = prefs.isEnabled();
+    IProject project;
+    try {
+      prefs.setEnabled(false);
+      prefMgr.savePreferences(prefs, null);
+      project = importProject("projects/MNGECLIPSE-688/ear50-1/pom.xml");
+      waitForJobsToComplete();
+      assertNoErrors(project);
+      IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+      assertNull(project.getName() + " should not be a faceted project", facetedProject);
+
+      prefs.setEnabled(true);
+      prefMgr.savePreferences(prefs, null);
+      updateProject(project);
+      facetedProject = ProjectFacetsManager.create(project);
+      assertNotNull(project.getName() + " is not a faceted project", facetedProject);
+      assertTrue(facetedProject.hasProjectFacet(EAR_FACET));
+    } finally {
+      prefs.setEnabled(originalState);
+      prefMgr.savePreferences(prefs, null);
+    }
+  }
+
+  @Test
+  public void test409856_disableM2eWtp_Property() throws Exception {
+    IProject project = importProject("projects/409856_disableM2eWtp/ejb1/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(project);
+    IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+    assertNull(project.getName() + " should not be a faceted project",
+        facetedProject);
+
+    updateProject(project, "new-pom.xml");
+    facetedProject = ProjectFacetsManager.create(project);
+    assertNotNull(project.getName() + " is not a faceted project",
+        facetedProject);
+    assertTrue(facetedProject.hasProjectFacet(EJB_FACET));
+  }
+
+
+  @Test
+  public void test409856_enableM2eWtp_Property() throws Exception {
+    IMavenWtpPreferencesManager prefMgr = MavenWtpPlugin.getDefault()
+        .getMavenWtpPreferencesManager();
+    IMavenWtpPreferences prefs = prefMgr.getWorkspacePreferences();
+    boolean originalState = prefs.isEnabled();
+    IProject project;
+    try {
+      prefs.setEnabled(false);
+      prefMgr.savePreferences(prefs, null);
+      project = importProject("projects/409856_disableM2eWtp/ejb2/pom.xml");
+      waitForJobsToComplete();
+      assertNoErrors(project);
+      IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+      assertTrue(facetedProject.hasProjectFacet(EJB_FACET));
+
+    } finally {
+      prefs.setEnabled(originalState);
+      prefMgr.savePreferences(prefs, null);
+    }
+
+  }
+
 }
