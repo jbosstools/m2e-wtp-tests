@@ -29,9 +29,9 @@
     <tycho.test.jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
     <eclipse.target>luna</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <m2e-repo.url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</m2e-repo.url>
+    <m2e-repo.url>http://repository.takari.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
-    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.15.0/</mavenarchiver-repo.url>
+    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.16.0/</mavenarchiver-repo.url>
   </properties>
 
   <organization>
