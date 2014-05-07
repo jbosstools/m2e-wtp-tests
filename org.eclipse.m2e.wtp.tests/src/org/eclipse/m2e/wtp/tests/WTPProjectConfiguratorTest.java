@@ -2151,11 +2151,11 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     importConfiguration.setProjectNameTemplate("[groupId].[artifactId]");
 
     importProject("projects/397173/pom.xml"); 
-    waitForJobsToComplete();
+    //waitForJobsToComplete();
     importProject("foo.utility", "projects/397173/foo/", importConfiguration);
-    waitForJobsToComplete();
+    //waitForJobsToComplete();
     importProject("bar.utility", "projects/397173/bar/", importConfiguration);
-    waitForJobsToComplete();
+    //waitForJobsToComplete();
     IProject web = importProject("projects/397173/web/pom.xml"); 
     waitForJobsToComplete();
     assertNoErrors(web);
@@ -2217,6 +2217,29 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     references =comp.getReferences(); 
     assertEquals(1, references.length);
     assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", references[0].getArchiveName());
+  }
+  
+  @Test
+  public void test431729() throws Exception {
+
+    IProject ear = importProject("projects/431729/ear/pom.xml");
+    waitForJobsToComplete();
+    IProject war = importProject("projects/431729/war/pom.xml");
+    waitForJobsToComplete();
+    
+    assertNoErrors(war);
+
+    IFacetedProject fpWar = ProjectFacetsManager.create(war);
+    assertNotNull(fpWar);
+    assertTrue(fpWar.hasProjectFacet(JavaFacet.FACET));
+
+    IJavaProject webProject = JavaCore.create(war);
+    IClasspathEntry[] rawClasspath = webProject.getRawClasspath();
+    assertEquals(Arrays.toString(rawClasspath), 4, rawClasspath.length);
+    assertEquals("/war/src/main/java", rawClasspath[0].getPath().toString());
+    assertEquals("/war/src/test/java", rawClasspath[1].getPath().toString());
+    assertEquals(JRE_CONTAINER_J2SE_1_5, rawClasspath[2].getPath().toString());
+    assertEquals(MAVEN_CLASSPATH_CONTAINER, rawClasspath[3].getPath().toString());
   }
   
   private static String dumpModules(List<Module> modules) {

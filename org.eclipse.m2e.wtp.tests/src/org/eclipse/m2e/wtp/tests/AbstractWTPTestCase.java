@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -52,6 +53,8 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.eclipse.wst.validation.ValidationFramework;
+import org.junit.BeforeClass;
 import org.osgi.framework.Version;
 
 @SuppressWarnings("restriction")
@@ -68,6 +71,8 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected static final String JRE_CONTAINER_J2SE_1_5 = "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5";
 
   protected static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
+  
+  private long startTime;
   
   static {
     String archiveNameAttribute = null;
@@ -93,6 +98,35 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     return null;
   }
 
+  
+  @BeforeClass
+  public static void beforeClass() {
+	  ValidationFramework.getDefault().suspendAllValidation(true);
+  }
+  
+    @Override
+	protected void setUp() throws Exception {
+		// TODO Auto-generated method stub
+	  	long s = System.currentTimeMillis();
+		super.setUp();
+		long e = System.currentTimeMillis() - s;
+		System.err.println("Setup took " + e  + " ms");
+		startTime = System.currentTimeMillis();
+	}
+
+  
+    @Override
+	protected void tearDown() throws Exception {
+		long elapsed = System.currentTimeMillis() - startTime;
+		System.err.println("Test ran in " + elapsed + " ms");
+
+	  	long s = System.currentTimeMillis();
+		super.tearDown();
+		long e = System.currentTimeMillis() - s;
+		System.err.println("teardown took " + e  + " ms");
+	}
+  
+  
   private static boolean hasExtraAttribute(IClasspathEntry entry, String expectedAttribute) {
     for (IClasspathAttribute cpa : entry.getExtraAttributes()) {
       if (expectedAttribute.equals(cpa.getName())){
@@ -241,7 +275,18 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     }
     waitForJobsToComplete();
   }
-
+  protected void waitForJobsToComplete() throws InterruptedException, CoreException {
+	    waitForJobsToComplete(monitor);
+  }
+  
+  public static void waitForJobsToComplete(IProgressMonitor monitor) throws InterruptedException, CoreException {
+	  long s = System.currentTimeMillis();
+	  AbstractMavenProjectTestCase.waitForJobsToComplete(monitor);
+	  long e = System.currentTimeMillis() -s ;
+	  System.err.println("Waited for jobs to complete for " + e + " ms");
+  }
+  
+  
   protected void updateProject(IProject project) throws Exception {   
     updateProject(project, null, -1);
   }
@@ -295,7 +340,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   }		
 
   private static boolean checkJavaEe7Compatibility() {
-	 String version = System.getProperty("java.vm.specification.version");
+	 String version = System.getProperty("java.specification.version");
 	 double javaVersion = Double.parseDouble(version);
 	 if (javaVersion  < 1.7) {
 		System.err.println("Can't run Java EE 7 tests with Java "+javaVersion);  
@@ -314,5 +359,19 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cpe, CLASSPATH_ARCHIVENAME_ATTRIBUTE);
   	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
   	assertEquals(expectedValue, archiveNameAttribute.getValue());
+  }
+  
+  protected static void assertNoErrors(IProject project) throws CoreException {
+	  List<IMarker> markers = findErrorMarkers(project);
+	  Iterator<IMarker> ite = markers.iterator(); 
+	  while (ite.hasNext()) {
+		  IMarker m = ite.next();
+		  if ("org.eclipse.wst.xml.core.validationMarker".equals(m.getType())
+				  && m.getAttribute(IMarker.MESSAGE).toString().contains("Referenced file contains errors")
+				  ) {
+			  ite.remove();
+		  }
+	  }
+	  org.junit.Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
   }
 }
