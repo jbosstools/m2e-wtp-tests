@@ -25,7 +25,6 @@ import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 @SuppressWarnings("restriction")
@@ -76,9 +75,9 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
     
   }
   
-  @Test
-  @Ignore //mavenarchiver doesn't rebuild manifests if pom.xml changes
-  public void testMECLIPSEWTP45_JarManifest() throws Exception {
+  //@Test
+  //mavenarchiver doesn't rebuild manifests if pom.xml changes
+  public void _testMECLIPSEWTP45_JarManifest() throws Exception {
 
 	boolean initialAutobuildingState = ResourcesPlugin.getWorkspace().isAutoBuilding();
 
