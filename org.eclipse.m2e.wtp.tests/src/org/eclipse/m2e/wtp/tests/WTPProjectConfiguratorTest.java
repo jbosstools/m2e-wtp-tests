@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -2341,6 +2342,181 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
       prefMgr.savePreferences(prefs, null);
     }
 
+  }
+  
+  @Test
+  public void test445404_skinnyWarsWithRegEx() throws Exception {
+	    
+	  IProject[] projects = importProjects("projects/445404/", //
+	        new String[] {"ear/pom.xml", "utility1/pom.xml", "utility2/pom.xml", "war-packagingIncludes/pom.xml",
+	        "war-packagingExcludes/pom.xml",}, new ResolverConfiguration());
+
+	    waitForJobsToComplete();
+
+	    assertEquals(5, projects.length);
+	    IProject ear = projects[0];
+	    IProject utility1 = projects[1];
+	    IProject utility2 = projects[2];
+	    IProject fullskinnywar = projects[3];
+	    IProject mixedskinnywar = projects[4];
+
+	    assertNoErrors(ear);
+	    assertNoErrors(utility1);
+	    assertNoErrors(utility2);
+	    assertNoErrors(fullskinnywar);
+	    assertNoErrors(mixedskinnywar);
+
+	    IVirtualComponent comp = ComponentCore.createComponent(ear);
+
+	    IVirtualReference utilityRef1 = comp.getReference("445404-utility1");
+	    assertNotNull(utilityRef1);
+	    IVirtualReference utilityRef2 = comp.getReference("445404-utility2");
+	    assertNotNull(utilityRef2);
+	  
+	    String classpath = null;
+	    IClasspathEntry[] mavenContainerEntries =  null;
+	    IFile war2ManifestFile = null;
+	    Manifest mf2 = null;
+	    Map<String, IVirtualReference> refWebLibMap = null;
+	    Map<String, IVirtualReference> refEarLibMap = null;
+	  
+	    ////////////
+	    //check the packagingExcludes war project
+	    ////////////
+	    IVirtualReference mixedSkinnyRef = comp.getReference("445404-war-packagingExcludes");
+	    assertNotNull(mixedSkinnyRef);
+	    assertEquals("445404-war-packagingExcludes-0.0.1-SNAPSHOT.war", mixedSkinnyRef.getArchiveName());
+
+	    IVirtualComponent mixedSkinnyComp = mixedSkinnyRef.getReferencedComponent();
+	    
+	    assertEquals("%regex[WEB-INF/lib/(?!445404-utility2|common-collections).*.jar]", mixedSkinnyComp.getMetaProperties().get(MavenWtpConstants.COMPONENT_EXCLUSION_PATTERNS));
+	  
+	    
+	    IVirtualReference[] mixedSkinnyReferences = mixedSkinnyComp.getReferences();
+
+	    refWebLibMap = new LinkedHashMap<String, IVirtualReference>();
+	    refEarLibMap = new LinkedHashMap<String, IVirtualReference>();
+	    
+	    for (IVirtualReference next : mixedSkinnyReferences) {
+	    	 if ("/WEB-INF/lib".equals(next.getRuntimePath().toString())){
+	    		 refWebLibMap.put(next.getArchiveName(),next);
+	 	     }
+	    	 else if ("/".equals(next.getRuntimePath().toString())){
+	    		 refEarLibMap.put(next.getArchiveName(),next);
+	    	 }
+	    	 else{
+	    		 fail("unexpected runtime path: " + next.getRuntimePath().toString());
+	    	 }   
+	   }
+	
+	    //web libs
+	    assertEquals(1, refWebLibMap.size());
+	    assertTrue(refWebLibMap.containsKey("445404-utility2-0.0.1-SNAPSHOT.jar"));
+	    assertEquals(utility2, refWebLibMap.get("445404-utility2-0.0.1-SNAPSHOT.jar").getReferencedComponent().getProject());
+
+	    //utility jar libs
+	    assertEquals(3, refEarLibMap.size());
+	    assertTrue(refEarLibMap.containsKey("commons-collections-2.0.jar"));
+		assertTrue(refEarLibMap.get("commons-collections-2.0.jar").getReferencedComponent().getDeployedName().endsWith("commons-collections-2.0.jar"));
+	
+	    assertTrue(refEarLibMap.containsKey("445404-utility1.jar"));
+		assertEquals(utility1, refEarLibMap.get("445404-utility1.jar").getReferencedComponent().getProject());
+			
+		assertTrue(refEarLibMap.containsKey("commons-lang-2.4.jar"));
+		assertTrue(refEarLibMap.get("commons-lang-2.4.jar").getReferencedComponent().getDeployedName().endsWith("commons-lang-2.4.jar"));
+		
+	    //check for all expected dependencies in the manifest
+	    war2ManifestFile = ComponentUtilities.findFile(mixedSkinnyComp, new Path(J2EEConstants.MANIFEST_URI));
+	    mf2 = loadManifest(war2ManifestFile);
+
+	    //check that manifest classpath only contain utility1 and commons-lang
+	    classpath = mf2.getMainAttributes().getValue(Attributes.Name.CLASS_PATH);
+	    assertTrue(classpath.contains(utilityRef1.getArchiveName()));
+	    assertTrue(classpath.contains(utilityRef2.getArchiveName()));
+	    //assertFalse(classpath.contains(utilityRef2.getArchiveName()));
+	    assertTrue(classpath.contains("commons-lang-2.4.jar"));//Maven manifest contains all entries!!!
+	    //assertFalse(classpath.contains("commons-collections-2.0.jar"));
+	    assertTrue(classpath.contains("commons-collections-2.0.jar"));//Maven manifest contains all entries!!!
+
+	    //...but not junit, which is a test dependency
+	    assertFalse(classpath.contains("junit-3.8.1.jar"));
+
+	    //check that junit and commons-collections are in the maven classpath container instead
+	    mavenContainerEntries = getMavenContainerEntries(mixedskinnywar);
+	    assertEquals(5, mavenContainerEntries.length);
+	    assertEquals("commons-collections-2.0.jar", mavenContainerEntries[3].getPath().lastSegment());
+	    assertEquals("junit-3.8.1.jar", mavenContainerEntries[4].getPath().lastSegment());
+	    
+	    ////////////
+	    //check the packagingIncludes war project
+	    ////////////
+
+	    IVirtualReference fullSkinnyRef = comp.getReference("445404-war-packagingIncludes");
+	    assertNotNull(fullSkinnyRef);
+	    assertEquals("445404-war-packagingIncludes-0.0.1-SNAPSHOT.war", fullSkinnyRef.getArchiveName());
+ 
+	    //the fully skinny war contains to project refs whatsoever
+	    IVirtualComponent fullSkinnyComp = fullSkinnyRef.getReferencedComponent();
+	    IVirtualReference[] fullSkinnyReferences = fullSkinnyComp.getReferences();
+	    assertEquals(4, fullSkinnyReferences.length);
+
+	    assertEquals("%regex[WEB-INF/lib/(445404-utility2).*.jar]", fullSkinnyComp.getMetaProperties().get(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS));
+	    
+	    
+	    refWebLibMap = new LinkedHashMap<String, IVirtualReference>();
+	    refEarLibMap = new LinkedHashMap<String, IVirtualReference>();
+	    
+	    for (IVirtualReference next : fullSkinnyReferences) {
+	    	 if ("/WEB-INF/lib".equals(next.getRuntimePath().toString())){
+	    		 refWebLibMap.put(next.getArchiveName(),next);
+	 	     }
+	    	 else if ("/".equals(next.getRuntimePath().toString())){
+	    		 refEarLibMap.put(next.getArchiveName(),next);
+	    	 }
+	    	 else{
+	    		 fail("unexpected runtime path: " + next.getRuntimePath().toString());
+	    	 }
+	    }
+	    
+	    //web libs
+	    assertEquals(1, refWebLibMap.size());
+
+	 	assertTrue(refWebLibMap.containsKey("445404-utility2-0.0.1-SNAPSHOT.jar"));
+	    assertEquals(utility2, refWebLibMap.get("445404-utility2-0.0.1-SNAPSHOT.jar").getReferencedComponent().getProject());
+
+	    //utility jar libs
+	    assertEquals(3, refEarLibMap.size());
+	    assertTrue(refEarLibMap.containsKey("445404-utility1.jar"));
+ 		assertEquals(utility1, refEarLibMap.get("445404-utility1.jar").getReferencedComponent().getProject());
+ 			
+	    assertTrue(refEarLibMap.containsKey("commons-collections-2.0.jar"));
+		assertTrue(refEarLibMap.get("commons-collections-2.0.jar").getReferencedComponent().getDeployedName().endsWith("commons-collections-2.0.jar"));
+	 
+	 	assertTrue(refEarLibMap.containsKey("commons-lang-2.4.jar"));
+		assertTrue(refEarLibMap.get("commons-lang-2.4.jar").getReferencedComponent().getDeployedName().endsWith("commons-lang-2.4.jar"));
+		
+
+	    //check for all expected dependencies in the manifest
+	    war2ManifestFile = ComponentUtilities.findFile(fullSkinnyComp, new Path(J2EEConstants.MANIFEST_URI));
+	    mf2 = loadManifest(war2ManifestFile);
+
+	    //check that manifest classpath only contain utility1 and commons-lang
+	    classpath = mf2.getMainAttributes().getValue(Attributes.Name.CLASS_PATH);
+	    assertTrue(classpath.contains(utilityRef1.getArchiveName()));
+	    assertTrue(classpath.contains(utilityRef2.getArchiveName()));
+	    //assertFalse(classpath.contains(utilityRef2.getArchiveName()));
+	    assertTrue(classpath.contains("commons-lang-2.4.jar"));//Maven manifest contains all entries!!!
+	    //assertFalse(classpath.contains("commons-collections-2.0.jar"));
+	    assertTrue(classpath.contains("commons-collections-2.0.jar"));//Maven manifest contains all entries!!!
+
+	    //...but not junit, which is a test dependency
+	    assertFalse(classpath.contains("junit-3.8.1.jar"));
+
+	    //check that junit and commons-collections are in the maven classpath container instead
+	    mavenContainerEntries = getMavenContainerEntries(mixedskinnywar);
+	    assertEquals(5, mavenContainerEntries.length);
+	    assertEquals("commons-collections-2.0.jar", mavenContainerEntries[3].getPath().lastSegment());
+	    assertEquals("junit-3.8.1.jar", mavenContainerEntries[4].getPath().lastSegment());
   }
 
 }
