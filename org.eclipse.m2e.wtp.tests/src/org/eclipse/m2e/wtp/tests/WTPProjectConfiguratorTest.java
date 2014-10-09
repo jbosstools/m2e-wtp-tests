@@ -256,16 +256,11 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IClasspathEntry[] cp = container.getClasspathEntries();
 
     assertEquals(2, cp.length);
-    if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-      assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
-      assertEquals("test-junit-3.8.1.jar", cp[1].getPath().lastSegment());
-    } else {
-      assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
-      assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
+    assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
+    assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
 
-      assertEquals("junit-3.8.1.jar", cp[1].getPath().lastSegment());
-      assertArchiveNameAttribute(cp[1], "test-junit-3.8.1.jar");
-    }
+    assertEquals("junit-3.8.1.jar", cp[1].getPath().lastSegment());
+    assertArchiveNameAttribute(cp[1], "test-junit-3.8.1.jar");
   }
 
   @Test
@@ -2186,7 +2181,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertNotNull(warComponent);
     IVirtualReference[] references = warComponent.getReferences();
     assertEquals(2, references.length);
-    assertEquals("junit-3.8.1.jar", warComponent.getReferences()[0].getArchiveName());
+    assertEquals("foo-junit-3.8.1.jar", warComponent.getReferences()[0].getArchiveName());
     assertEquals("junit-junit-3.8.1.jar", warComponent.getReferences()[1].getArchiveName());
   }
 

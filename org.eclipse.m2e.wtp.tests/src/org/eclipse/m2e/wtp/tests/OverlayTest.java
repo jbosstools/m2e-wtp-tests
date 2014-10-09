@@ -33,7 +33,6 @@ public class OverlayTest extends AbstractWTPTestCase {
       war.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
       waitForJobsToComplete();
       assertNoErrors(war);
-      System.out.println("Build complete"+war);
       IVirtualComponent comp = ComponentCore.createComponent(war);
       assertNotNull(comp);
       

@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.m2e.core.internal.builder.IIncrementalBuildFramework;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -179,8 +180,11 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
     assertNoErrors(ear);    
     IProject jar =  projects[1];
     assertNoErrors(jar);    
+    jar.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
     IProject rar =  projects[2];
+    rar.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
     assertNoErrors(rar);      
+    
     
     IFile rarManifestFile = rar.getFile("target/classes/META-INF/MANIFEST.MF");
     String manifest =getAsString(rarManifestFile);
