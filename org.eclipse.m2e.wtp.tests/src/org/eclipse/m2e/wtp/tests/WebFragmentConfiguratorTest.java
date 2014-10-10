@@ -129,4 +129,29 @@ public class WebFragmentConfiguratorTest extends AbstractWTPTestCase {
     IProject jar = projects[1];
     assertNoErrors(jar);
   }
+  
+  @Test
+  public void test446050_webFragment31() throws Exception {
+    IProject project = importProject("projects/446050/webfrag31/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(project);
+    IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+    assertNotNull(facetedProject);
+    assertEquals(2, facetedProject.getProjectFacets().size());
+    assertEquals(WTPProjectsUtil.WEB_FRAGMENT_FACET.getVersion("3.1"), facetedProject.getProjectFacetVersion(WTPProjectsUtil.WEB_FRAGMENT_FACET));
+    assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
+  }
+
+  @Test
+  public void test446050_unknownWebFragmentVersion() throws Exception {
+    IProject project = importProject("projects/446050/webfragUnknown/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(project);
+    IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+    assertNotNull(facetedProject);
+    assertEquals(2, facetedProject.getProjectFacets().size());
+    assertEquals(WTPProjectsUtil.WEB_FRAGMENT_FACET.getDefaultVersion(), facetedProject.getProjectFacetVersion(WTPProjectsUtil.WEB_FRAGMENT_FACET));
+    assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
+  }
+
 }
