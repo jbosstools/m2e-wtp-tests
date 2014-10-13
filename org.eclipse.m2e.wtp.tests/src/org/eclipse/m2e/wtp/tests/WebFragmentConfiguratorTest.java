@@ -15,8 +15,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
+import org.eclipse.m2e.jdt.internal.BuildPathManager;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
@@ -37,6 +40,8 @@ public class WebFragmentConfiguratorTest extends AbstractWTPTestCase {
 
     assertFalse(project.exists(new Path("/src/main/java/META-INF/")));
     assertFalse(project.exists(new Path("/src/main/resources/META-INF/MANIFEST.MF")));
+    IClasspathEntry mce = BuildPathManager.getMavenContainerEntry(JavaCore.create(project));
+    assertNotDeployable(mce);
   }
 
   @Test
