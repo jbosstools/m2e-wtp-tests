@@ -22,8 +22,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.wtp.MavenWtpConstants;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
@@ -349,6 +351,27 @@ public class ResourceFilteringTest extends AbstractWTPTestCase {
     IFile testXml = filteredFolder.getFile("WEB-INF/etc/config/test.xml");
     assertTrue("test.xml is missing",testXml.exists());
   }  
+  
+  
+  public void test437441_OverrideApplicationXmlDestinationWhenFiltering() throws Exception {
+    useBuildDirforGeneratingFiles(false);
+    try {
+      IProject project = importProject("projects/437441/ear/pom.xml");
+      project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+      waitForJobsToComplete();
+      List<IMarker> markers = findMarkers(project, IMarker.SEVERITY_WARNING);
+      assertFalse("Should have some markers",markers.isEmpty());
+      assertHasMarker(Messages.markers_mavenarchiver_output_settings_ignored_warning, markers);
+      
+      assertTrue(project.exists(new Path("/target/m2e-wtp/ear-resources/META-INF/application.xml")));
+      assertTrue(project.exists(new Path("/target/m2e-wtp/ear-resources/META-INF/jboss-service.xml")));
+      
+    } finally {
+      useBuildDirforGeneratingFiles(true);
+    }
+  }
+  
+  
   /**
    * @param folder
    * @return
