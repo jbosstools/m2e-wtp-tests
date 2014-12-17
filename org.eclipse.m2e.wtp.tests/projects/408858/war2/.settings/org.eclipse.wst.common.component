@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="no-customization-needed">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" />
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <property name="context-root" value="no-customization-needed"/>
+        <property name="java-output-path" value="/no-customization-needed/target/classes"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources" tag="defaultRootSource"/>
+    </wb-module>
+</project-modules>

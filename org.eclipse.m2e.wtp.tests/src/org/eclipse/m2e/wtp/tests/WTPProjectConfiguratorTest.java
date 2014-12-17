@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -39,6 +40,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jst.common.project.facet.JavaFacetUtils;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.jst.j2ee.application.WebModule;
+import org.eclipse.jst.j2ee.componentcore.J2EEModuleVirtualComponent;
 import org.eclipse.jst.j2ee.componentcore.util.EARArtifactEdit;
 import org.eclipse.jst.j2ee.internal.J2EEConstants;
 import org.eclipse.jst.j2ee.internal.project.J2EEProjectUtilities;
@@ -2510,4 +2512,32 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 	    assertEquals("junit-3.8.1.jar", mavenContainerEntries[4].getPath().lastSegment());
   }
 
+  @Test
+  public void test408858_keepExistingDeployedFolders() throws Exception {
+    IProject war = createExisting("war1", "projects/408858/war1");
+    updateProject(war);
+    IVirtualComponent warComponent = ComponentCore.createComponent(war);
+    IVirtualFolder rootwar = warComponent.getRootFolder();
+    IResource[] warResources = rootwar.getUnderlyingResources();
+    assertEquals(3, warResources.length);
+    assertEquals(war.getFolder("/target/m2e-wtp/web-resources/"), warResources[0]);
+    assertEquals(war.getFolder("/src/main/webapp/"), warResources[1]);
+    assertEquals(war.getFolder("/extra/"), warResources[2]);
+  }
+  
+  @Test
+  public void test408858_keepExistingDeployedFoldersOrder() throws Exception {
+    IProject war = createExisting("war2", "projects/408858/war2");
+    updateProject(war);
+    IVirtualComponent warComponent = ComponentCore.createComponent(war);
+    IVirtualFolder rootwar = warComponent.getRootFolder();
+    IResource[] warResources = rootwar.getUnderlyingResources();
+    assertEquals(2, warResources.length);
+    assertEquals(war.getFolder("/src/main/webapp/"), warResources[0]);
+    IPath webResources = new Path("/target/m2e-wtp/web-resources/");
+    assertEquals(war.getFolder(webResources), warResources[1]);
+    assertEquals(webResources, J2EEModuleVirtualComponent.getDefaultDeploymentDescriptorFolder(rootwar));
+    
+    
+  }
 }
