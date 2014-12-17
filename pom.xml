@@ -24,10 +24,10 @@
   <name>M2E-WTP-TESTS :: Parent</name>
 
   <properties>
-    <tycho-version>0.20.0</tycho-version>
+    <tycho-version>0.22.0</tycho-version>
     <test.timeout>2400</test.timeout><!--  45 mins -->
     <tycho.test.jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>luna</eclipse.target>
+    <eclipse.target>mars</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <m2e-repo.url>http://download.eclipse.org/technology/m2e/snapshots/1.6.0/latest/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
@@ -67,13 +67,13 @@
       <layout>p2</layout>
       <url>${m2e-repo.url}</url>
     </repository>
-    <!-- Already included in m2e-wtp update site
+    <!-- Already included in m2e-wtp update site -->
     <repository>
       <id>mavenarchiver</id>
       <layout>p2</layout>
       <url>${mavenarchiver-repo.url}</url>
     </repository>
-    -->
+    
     <repository>
       <id>m2e-wtp</id>
       <layout>p2</layout>

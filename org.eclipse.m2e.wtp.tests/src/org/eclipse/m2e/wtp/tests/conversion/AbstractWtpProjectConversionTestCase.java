@@ -121,7 +121,9 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
   protected void assertConvertsAndBuilds(IProject project) throws CoreException, InterruptedException, Exception {
 
 	try {
-		setCompilerVersion(getCompilerVersion());
+		forceCompilerVersion(getCompilerVersion());
+		forceWarPluginVersion(getWarPluginVersion());
+		forceEarPluginVersion(getEarPluginVersion());
 		
 		//Convert the project to a Maven project (generates pom.xml, enables Maven nature)
 		convert(project);
@@ -135,6 +137,8 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
 		checkForErrors(project);
 	} finally {
 		restoreCompilerVersion();
+		restoreEarPluginVersion();
+		restoreWarPluginVersion();
 	}
   }
   
@@ -143,20 +147,51 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
 	return "2.3.2";
   }
 
+  protected String getWarPluginVersion() {
+	//Lock compiler version so that m2e-wtp evolutions don't bite us
+	return "2.4";
+  }
+  
+  protected String getEarPluginVersion() {
+	//Lock compiler version so that m2e-wtp evolutions don't bite us
+	return "2.9";
+  }
+  
   protected void checkForErrors(IProject project) throws CoreException {
 	    assertNoErrors(project);
   }
 
-  protected void setCompilerVersion(String version) {
+  protected void forceCompilerVersion(String version) {
 	  if (version == null) {
 		  restoreCompilerVersion();
 	  } else {
 		  System.setProperty("org.eclipse.m2e.jdt.conversion.compiler.version", version);
 	  }
   }
+
+  protected void forceEarPluginVersion(String version) {
+	  if (version == null) {
+		  restoreEarPluginVersion();
+	  } else {
+		  System.setProperty("org.eclipse.m2e.wtp.conversion.earplugin.version", version);
+	  }
+  }
+  
+  protected void forceWarPluginVersion(String version) {
+	  if (version == null) {
+		  restoreWarPluginVersion();
+	  } else {
+		  System.setProperty("org.eclipse.m2e.wtp.conversion.warplugin.version", version);
+	  }
+  }
   
   protected void restoreCompilerVersion() {
 	 System.clearProperty("org.eclipse.m2e.jdt.conversion.compiler.version");
   }
-  
+  protected void restoreWarPluginVersion() {
+	 System.clearProperty("org.eclipse.m2e.wtp.conversion.warplugin.version");
+  }  
+  protected void restoreEarPluginVersion() {
+		 System.clearProperty("org.eclipse.m2e.wtp.conversion.earplugin.version");
+  }  
 }

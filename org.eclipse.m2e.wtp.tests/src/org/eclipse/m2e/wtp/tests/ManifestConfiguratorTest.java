@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.m2e.core.internal.builder.IIncrementalBuildFramework;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -30,6 +29,21 @@ import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class ManifestConfiguratorTest extends AbstractWTPTestCase {
+  
+  private boolean initialAutobuildingState;
+  
+  @Override
+  protected void setUp() throws Exception {
+	super.setUp();
+	initialAutobuildingState = ResourcesPlugin.getWorkspace().isAutoBuilding();  
+	setAutoBuild(true);
+  }
+	
+  @Override
+  protected void tearDown() throws Exception {
+	setAutoBuild(initialAutobuildingState);
+	super.tearDown();
+  }
   
   @Test
   public void testMECLIPSEWTP66_unWantedManifests() throws Exception {
@@ -76,14 +90,10 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
     
   }
   
-  //@Test
+  @Test
   //mavenarchiver doesn't rebuild manifests if pom.xml changes
-  public void _testMECLIPSEWTP45_JarManifest() throws Exception {
-
-	boolean initialAutobuildingState = ResourcesPlugin.getWorkspace().isAutoBuilding();
-
-	try {
-		setAutoBuild(true);
+  public void testMECLIPSEWTP45_JarManifest() throws Exception {
+		
 	    IProject[] projects = importProjects("projects/manifests/MECLIPSEWTP-45/", 
 	        new String[]{"pom.xml", 
 	                    "jar/pom.xml", 
@@ -126,9 +136,6 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
 	    assertNoErrors(jar);
 	    manifest =getAsString(manifestFile);
 	    assertContains("Class-Path: junit-3.8.1.jar", manifest);
-	} finally {
-		setAutoBuild(initialAutobuildingState);
-	}
   }
 
   private void setAutoBuild(boolean state) throws CoreException {
