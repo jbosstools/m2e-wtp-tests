@@ -23,6 +23,8 @@ import org.junit.Test;
  */
 public class WebProjectConversionTest extends AbstractWtpProjectConversionTestCase {
 
+	private static final String OVERRIDE_WARPLUGIN_VERSION_KEY = "org.eclipse.m2e.wtp.conversion.warplugin.version";
+
 	@Override
 	protected String getPackagingUnderTest() {
 		return "war";
@@ -73,5 +75,16 @@ public class WebProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		// Checks a servlet 2.4 project with maven layout and Java 1.5 produces
 		// a minimal pom.xml
 		testProjectConversion("no-customization-needed");
+	}
+	
+	@Override
+	protected String getOverrideSystemPropertyKey() {
+		return OVERRIDE_WARPLUGIN_VERSION_KEY;
+	}
+	
+	@Override
+	protected String getTestedPluginVersion() {
+		//Lock compiler version so that m2e-wtp evolutions don't bite us
+		return "2.4";
 	}
 }

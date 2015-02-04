@@ -19,6 +19,9 @@ import org.junit.Test;
  */
 public class AppClientProjectConversionTest extends AbstractWtpProjectConversionTestCase {
 
+	private static final String OVERRIDE_ACRPLUGIN_VERSION_KEY = "org.eclipse.m2e.wtp.conversion.acrplugin.version";
+
+
 	@Override
 	protected String getPackagingUnderTest() {
 		return "app-client";
@@ -34,5 +37,14 @@ public class AppClientProjectConversionTest extends AbstractWtpProjectConversion
 		testProjectConversion("app-client-2");
 	}
 	
+	@Override
+	protected String getOverrideSystemPropertyKey() {
+		return OVERRIDE_ACRPLUGIN_VERSION_KEY;
+	}
 
+
+	@Override
+	protected String getTestedPluginVersion() {
+		return "1.0";
+	}	
 }

@@ -19,6 +19,8 @@ import org.junit.Test;
  */
 public class ConnectorProjectConversionTest extends AbstractWtpProjectConversionTestCase {
 
+	private static final String OVERRIDE_RARPLUGIN_VERSION_KEY = "org.eclipse.m2e.wtp.conversion.rarplugin.version";
+
 	@Override
 	protected String getPackagingUnderTest() {
 		return "rar";
@@ -34,4 +36,13 @@ public class ConnectorProjectConversionTest extends AbstractWtpProjectConversion
 		testProjectConversion("jca15");
 	}
 
+	@Override
+	protected String getOverrideSystemPropertyKey() {
+		return OVERRIDE_RARPLUGIN_VERSION_KEY;
+	}
+
+	@Override
+	protected String getTestedPluginVersion() {
+		return "2.2";
+	} 
 }

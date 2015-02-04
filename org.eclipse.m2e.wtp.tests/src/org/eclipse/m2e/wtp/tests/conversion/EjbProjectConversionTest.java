@@ -19,6 +19,8 @@ import org.junit.Test;
  */
 public class EjbProjectConversionTest extends AbstractWtpProjectConversionTestCase {
 
+	private static final String OVERRIDE_EJBPLUGIN_VERSION_KEY = "org.eclipse.m2e.wtp.conversion.ejbplugin.version";
+
 	@Override
 	protected String getPackagingUnderTest() {
 		return "ejb";
@@ -35,5 +37,17 @@ public class EjbProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		// Checks an EJB 2.1 project with maven layout and Java 1.5 produces
 		// a minimal pom.xml
 		testProjectConversion("ejb21");
+	}
+
+
+	@Override
+	protected String getOverrideSystemPropertyKey() {
+		return OVERRIDE_EJBPLUGIN_VERSION_KEY;
+	}
+
+
+	@Override
+	protected String getTestedPluginVersion() {
+		return "2.3";
 	}	
 }
