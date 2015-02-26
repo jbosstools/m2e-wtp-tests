@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sonatype, Inc.
+ * Copyright (c) 2011-2015 Sonatype, Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -370,6 +370,36 @@ public class ResourceFilteringTest extends AbstractWTPTestCase {
       useBuildDirforGeneratingFiles(true);
     }
   }
+  
+  @Test
+  public void test460895_classicResourcefiltering() throws Exception {
+    IProject ear = importProject("projects/460895/ear/pom.xml");
+    waitForJobsToComplete();
+    
+    ear.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
+    waitForJobsToComplete();
+    assertNoErrors(ear);
+    
+    IFolder earResourcesFolder = ear.getFolder(EAR_FILTERED_FOLDER_NAME);
+    assertTrue("Filtered folder doesn't exist", earResourcesFolder.exists());
+
+    IFile jbossServiceFile = earResourcesFolder.getFile("META-INF/jboss-service.xml");
+    assertTrue("jboss-service.xml doesn't exist", jbossServiceFile.exists());
+    
+    IFile ignoredFile = earResourcesFolder.getFile("META-INF/ignore-me.xml");
+    assertFalse("ignore-me.xml should have been ignored from filtering", ignoredFile.exists());    
+
+    String jbossService = getAsString(jbossServiceFile);
+    String expectedAttribute = "<attribute name=\"CustomAttribute\">MBean Attribute Value</attribute>";
+    assertTrue("File was not filtered "+jbossService, jbossService.contains(expectedAttribute));
+
+    IFile jbossServiceRelativeFile = earResourcesFolder.getFile("jboss-service-relative.xml");
+    assertTrue("jboss-service-relative.xml doesn't exist", jbossServiceRelativeFile.exists());
+    expectedAttribute = "<attribute name=\"CustomAttribute\">${my.custom.mbean.attribute.value}</attribute>";
+    String jbossServiceRelative = getAsString(jbossServiceRelativeFile);
+    assertTrue("File was filtered :"+jbossServiceRelative, jbossServiceRelative.contains(expectedAttribute));
+  }
+
   
   
   /**
