@@ -36,12 +36,12 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
   protected void setUp() throws Exception {
 	super.setUp();
 	initialAutobuildingState = ResourcesPlugin.getWorkspace().isAutoBuilding();  
-	setAutoBuild(true);
+	setAutoBuilding(true);
   }
 	
   @Override
   protected void tearDown() throws Exception {
-	setAutoBuild(initialAutobuildingState);
+	setAutoBuilding(initialAutobuildingState);
 	super.tearDown();
   }
   
@@ -136,12 +136,6 @@ public class ManifestConfiguratorTest extends AbstractWTPTestCase {
 	    assertNoErrors(jar);
 	    manifest =getAsString(manifestFile);
 	    assertContains("Class-Path: junit-3.8.1.jar", manifest);
-  }
-
-  private void setAutoBuild(boolean state) throws CoreException {
-	    IWorkspaceDescription description = workspace.getDescription();
-	    description.setAutoBuilding(state);
-	    workspace.setDescription(description);	
   }
 
   @Test

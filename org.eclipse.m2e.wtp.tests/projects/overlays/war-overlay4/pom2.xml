@@ -28,6 +28,7 @@
 				<version>2.1.1</version>
 				<configuration>
 				    <dependentWarExcludes>**/excluded.*</dependentWarExcludes>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<overlays>
 					   <overlay>
 						<groupId>test.overlays</groupId>

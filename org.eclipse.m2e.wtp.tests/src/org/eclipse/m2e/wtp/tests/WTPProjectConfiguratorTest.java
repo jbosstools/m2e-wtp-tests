@@ -1382,7 +1382,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     IFacetedProject facetedProject = ProjectFacetsManager.create(web);
     assertNotNull(facetedProject);
-    assertEquals(WebFacetUtils.WEB_23, facetedProject.getInstalledVersion(WebFacetUtils.WEB_FACET));
+    assertEquals(WebFacetUtils.WEB_24, facetedProject.getInstalledVersion(WebFacetUtils.WEB_FACET));
     assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
     assertNoErrors(web);
 
@@ -1402,13 +1402,13 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertFalse(defaultWebXml.exists());//Check te default web.xml is not created
 
     //Let's spice it up : use a profile to change the web.xml, which incidentally will trigger a facet change
-    /* FIXME this test now fails with the new mavenarchiver dependency. But smoke testing this works fine.
+    /* FIXME this test now fails with the new mavenarchiver dependency. But smoke testing this works fine.*/
     updateProject(web, "useProfileForCustomWebXml.xml");
     assertNoErrors(web);
 
     facetedProject = ProjectFacetsManager.create(web);
     assertNotNull(facetedProject);
-    assertEquals(WebFacetUtils.WEB_24, facetedProject.getInstalledVersion(WebFacetUtils.WEB_FACET));
+    assertEquals(WebFacetUtils.WEB_25, facetedProject.getInstalledVersion(WebFacetUtils.WEB_FACET));
     assertTrue(facetedProject.hasProjectFacet(JavaFacet.FACET));
     assertNoErrors(web);
 
@@ -1420,7 +1420,6 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertEquals("found "+toString(webXmlFiles),  1, webXmlFiles.length);
     //Check non default web.xml
     assertEquals(web.getFile("/profile/web.xml"), webXmlFiles[0]);
-     */
   }
 
   @Test
@@ -2548,7 +2547,48 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     IPath webResources = new Path("/target/m2e-wtp/web-resources/");
     assertEquals(war.getFolder(webResources), warResources[1]);
     assertEquals(webResources, J2EEModuleVirtualComponent.getDefaultDeploymentDescriptorFolder(rootwar));
-    
-    
   }
+  
+  @Test
+  public void test458196_missingWebXmlMarker() throws Exception {
+	setAutoBuilding(true);
+    IProject project = importProject("projects/458196/webxml/pom.xml");
+    waitForJobsToComplete();
+    List<IMarker> markers = findMarkers(project, IMarker.SEVERITY_ERROR);
+    assertEquals(toString(markers), 1,  markers.size());
+    assertEquals(org.eclipse.m2e.wtp.MavenWtpConstants.WTP_MARKER_FAIL_ON_MISSING_WEBXML_ERROR, markers.get(0).getType());
+
+    updateProject(project, "dont_fail_on_missing_webxml.xml");
+    assertNoErrors(project);
+  }
+  
+  @Test
+  public void test458196_missingWebXmlMarker2() throws Exception {
+	setAutoBuilding(true);
+    IProject project = importProject("projects/458196/webxml/pom.xml");
+    waitForJobsToComplete();
+    List<IMarker> markers = findMarkers(project, IMarker.SEVERITY_ERROR);
+    assertEquals(toString(markers), 1,  markers.size());
+    assertEquals(org.eclipse.m2e.wtp.MavenWtpConstants.WTP_MARKER_FAIL_ON_MISSING_WEBXML_ERROR, markers.get(0).getType());
+
+    updateProject(project, "custom_webxml.xml");
+    assertNoErrors(project);
+  }
+  
+  @Test
+  public void test458196_missingWebXmlMarker3() throws Exception {
+	setAutoBuilding(true);
+    IProject project = importProject("projects/458196/war/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(project);
+
+    project.getFile("src/main/webapp/WEB-INF/web.xml").delete(true,monitor);
+    waitForJobsToComplete();
+    
+    List<IMarker> markers = findMarkers(project, IMarker.SEVERITY_ERROR);
+    assertEquals(1,  markers.size());
+    assertEquals(org.eclipse.m2e.wtp.MavenWtpConstants.WTP_MARKER_FAIL_ON_MISSING_WEBXML_ERROR, markers.get(0).getType());
+
+  }
+  
 }

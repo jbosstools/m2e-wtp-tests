@@ -21,6 +21,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
+				    <failOnMissingWebXml>false</failOnMissingWebXml>
 					<overlays>
 					   <overlay>
 						<groupId>test.overlays</groupId>
