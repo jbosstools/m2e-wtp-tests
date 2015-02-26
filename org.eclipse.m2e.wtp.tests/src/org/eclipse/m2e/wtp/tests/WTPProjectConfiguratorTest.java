@@ -2221,6 +2221,17 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
   }
 
   @Test
+  public void test460959_useBaseVersionForOldPlugins() throws Exception {
+    IProject ear = importProject("projects/460959/pom.xml");
+    waitForJobsToComplete();
+
+    IVirtualComponent comp = ComponentCore.createComponent(ear);
+    IVirtualReference[] references =comp.getReferences();
+    assertEquals(1, references.length);
+    assertEquals("MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar", references[0].getArchiveName());
+  }
+  
+  @Test
   public void test431729() throws Exception {
 
     IProject ear = importProject("projects/431729/ear/pom.xml");
