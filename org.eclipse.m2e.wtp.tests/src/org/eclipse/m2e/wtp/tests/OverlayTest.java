@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sonatype, Inc.
+ * Copyright (c) 2011-2015 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,10 @@ import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.model.IModuleResource;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class OverlayTest extends AbstractWTPTestCase {
 
-  @Test
+@Test
   public void testArchiveOverlay() throws Exception {
       IProject war = importProject("projects/overlays/war-overlay1/pom.xml");
       waitForJobsToComplete();
@@ -265,7 +266,32 @@ public class OverlayTest extends AbstractWTPTestCase {
       assertTrue("META-INF/MANIFEST.MF is missing from "+ resources, resources.contains("META-INF/MANIFEST.MF"));
       assertTrue("WEB-INF/lib/webfragment-0.0.1-SNAPSHOT.jar is missing from "+ resources,resources.contains("WEB-INF/lib/webfragment-0.0.1-SNAPSHOT.jar"));
       assertTrue("index.html is missing from "+ resources,resources.contains("index.html"));
-      
   }
   
+  @Test
+  public void test398138_OverlayContainingWorkspaceUtilityJar() throws Exception {
+	  setAutoBuilding(true);
+      IProject[] projects = importProjects("projects/overlays/bug-overlay-m2e",
+                              new String[]{"pom.xml", "servlet-prod/pom.xml", "servlet/pom.xml", "utils/pom.xml"},
+                              new ResolverConfiguration()
+                            );
+      waitForJobsToComplete();
+      IProject war = projects[1];
+      war.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+      waitForJobsToComplete();
+      
+      assertNoErrors(war);
+      
+      IVirtualComponent comp = ComponentCore.createComponent(war);
+      assertNotNull(comp);
+      
+      IServer server = TestServerUtil.createPreviewServer();
+      TestServerUtil.addProjectToServer(war, server);
+      
+      List<String> resources = TestServerUtil.toList(TestServerUtil.getServerModuleResources(war));
+      assertTrue("WEB-INF/lib/utils-1.0-SNAPSHOT.jar is missing from "+ resources,resources.contains("WEB-INF/lib/utils-1.0-SNAPSHOT.jar"));
+      assertTrue("WEB-INF/lib/junit-4.10.jar is missing from "+ resources,resources.contains("WEB-INF/lib/junit-4.10.jar"));
+      assertTrue("WEB-INF/lib/hamcrest-core-1.1.jar is missing from "+ resources,resources.contains("WEB-INF/lib/hamcrest-core-1.1.jar"));
+      assertTrue("WEB-INF/classes/servlet/Constants.class is missing from "+ resources,resources.contains("WEB-INF/classes/servlet/Constants.class"));
+  }
 }

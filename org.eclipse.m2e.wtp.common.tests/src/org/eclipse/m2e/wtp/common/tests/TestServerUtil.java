@@ -13,7 +13,10 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.IRuntimeType;
@@ -35,17 +38,39 @@ public class TestServerUtil {
     if (module == null) {
       throw  new IllegalArgumentException(project.getName() + " is not a Server IModule");
     }
-    ModuleDelegate d = (ModuleDelegate)module.loadAdapter(ModuleDelegate.class, new NullProgressMonitor());
+    final ModuleDelegate d = (ModuleDelegate)module.loadAdapter(ModuleDelegate.class, new NullProgressMonitor());
+    
     if (d == null) {
       throw new NullPointerException("can not find ModuleDelegate for [" + module.getModuleType().getId() + ", " + module.getClass()+ "]");
     }
     //1st call to members() will trigger unzipping of archive overlays
     d.members();
-    Thread.sleep(1000);
+    Thread.sleep(500);
     //Should get the complete members now
     IModuleResource[] resources = d.members();
     //System.err.println("top resources " + toList(resources));
     List<IModuleResource> all = new ArrayList<IModuleResource>();
+    
+    for (final IModule cm :d.getChildModules()) {
+    	final String path = d.getPath(cm);
+    	all.add(new IModuleResource() {
+			@Override
+			public Object getAdapter(Class adapter) {
+				return null;
+			}
+			
+			@Override
+			public String getName() {
+				return path.substring(path.lastIndexOf("/")+1);
+			}
+			
+			@Override
+			public IPath getModuleRelativePath() {
+				return new Path(path.substring(0, path.lastIndexOf("/")));
+			}
+		});
+    }
+    
     if (resources != null) {
       walk(resources, all);
     }
@@ -101,12 +126,13 @@ public class TestServerUtil {
     
   }
 
+  @SuppressWarnings("restriction")
   public static IServer createPreviewServer() throws CoreException {
     IRuntimeType rt = ServerCore.findRuntimeType("org.eclipse.jst.server.preview.runtime");
     IRuntimeWorkingCopy wc = rt.createRuntime("preview", null);
     IRuntime runtime = wc.save(true, null);
     IServerType st = ServerCore.findServerType("org.eclipse.jst.server.preview.server");
-    ServerWorkingCopy swc = (ServerWorkingCopy) st.createServer("previewServer", null, null);
+	ServerWorkingCopy swc = (ServerWorkingCopy) st.createServer("previewServer", null, null);
     swc.setServerConfiguration(null);
     swc.setName("previewServer");
     swc.setRuntime(runtime);
@@ -115,13 +141,14 @@ public class TestServerUtil {
   }
   
   public static void addProjectToServer(IProject project, IServer server) throws CoreException {
+	IProgressMonitor monitor = new NullProgressMonitor();
     IModule module  = ServerUtil.getModule(project);
-    if (ServerUtil.containsModule(server, module, new NullProgressMonitor())) {
+    if (ServerUtil.containsModule(server, module, monitor)) {
       return;
     }
     IServerWorkingCopy copy = server.createWorkingCopy();
-    copy.modifyModules(new IModule[]{module}, new IModule[0], new NullProgressMonitor());
-    server = copy.save(true, new NullProgressMonitor());
+    copy.modifyModules(new IModule[]{module}, new IModule[0], monitor);
+    server = copy.save(true, monitor);
   }
   
   
