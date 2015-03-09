@@ -49,7 +49,7 @@ public class TestServerUtil {
     //Should get the complete members now
     IModuleResource[] resources = d.members();
     //System.err.println("top resources " + toList(resources));
-    List<IModuleResource> all = new ArrayList<IModuleResource>();
+    List<IModuleResource> all = new ArrayList<>();
     
     for (final IModule cm :d.getChildModules()) {
     	final String path = d.getPath(cm);
@@ -80,7 +80,7 @@ public class TestServerUtil {
   }
   
   public static List<String> toList(IModuleResource[] resources) throws Exception {
-    List<String> resourcesAsString = new ArrayList<String>();
+    List<String> resourcesAsString = new ArrayList<>();
     if (resources != null) {
       for (IModuleResource r : resources) {
           resourcesAsString.add(getPath(r));

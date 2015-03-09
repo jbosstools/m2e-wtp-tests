@@ -127,7 +127,7 @@ public class ClassifierClasspathProviderTest extends AbstractWTPTestCase {
 
 	private IRuntimeClasspathEntry[] getUserClasspathEntries(
 			IRuntimeClasspathEntry[] entries) {
-		ArrayList<IRuntimeClasspathEntry> result = new ArrayList<IRuntimeClasspathEntry>();
+		ArrayList<IRuntimeClasspathEntry> result = new ArrayList<>();
 		for (IRuntimeClasspathEntry entry : entries) {
 			if (IRuntimeClasspathEntry.USER_CLASSES == entry
 					.getClasspathProperty()) {

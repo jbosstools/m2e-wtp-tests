@@ -2094,7 +2094,7 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     assertNoErrors(util);
 
     IVirtualComponent warComp = ComponentCore.createComponent(war);
-    Map<String, Object> options = new HashMap<String, Object>(1);
+    Map<String, Object> options = new HashMap<>(1);
     options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, WTPProjectsUtil.DYN_REQUESTED_REFERENCE_TYPE);
     IVirtualReference[] refs = warComp.getReferences(options);
     assertEquals(1, refs.length);
@@ -2401,8 +2401,8 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 	    
 	    IVirtualReference[] mixedSkinnyReferences = mixedSkinnyComp.getReferences();
 
-	    refWebLibMap = new LinkedHashMap<String, IVirtualReference>();
-	    refEarLibMap = new LinkedHashMap<String, IVirtualReference>();
+	    refWebLibMap = new LinkedHashMap<>();
+	    refEarLibMap = new LinkedHashMap<>();
 	    
 	    for (IVirtualReference next : mixedSkinnyReferences) {
 	    	 if ("/WEB-INF/lib".equals(next.getRuntimePath().toString())){
@@ -2468,8 +2468,8 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 	    assertEquals("%regex[WEB-INF/lib/(445404-utility2).*.jar]", fullSkinnyComp.getMetaProperties().get(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS));
 	    
 	    
-	    refWebLibMap = new LinkedHashMap<String, IVirtualReference>();
-	    refEarLibMap = new LinkedHashMap<String, IVirtualReference>();
+	    refWebLibMap = new LinkedHashMap<>();
+	    refEarLibMap = new LinkedHashMap<>();
 	    
 	    for (IVirtualReference next : fullSkinnyReferences) {
 	    	 if ("/WEB-INF/lib".equals(next.getRuntimePath().toString())){
