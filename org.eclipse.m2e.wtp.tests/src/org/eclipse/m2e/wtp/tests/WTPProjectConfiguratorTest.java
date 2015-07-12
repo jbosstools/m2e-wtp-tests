@@ -2588,7 +2588,14 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     List<IMarker> markers = findMarkers(project, IMarker.SEVERITY_ERROR);
     assertEquals(1,  markers.size());
     assertEquals(org.eclipse.m2e.wtp.MavenWtpConstants.WTP_MARKER_FAIL_ON_MISSING_WEBXML_ERROR, markers.get(0).getType());
-
   }
   
+  
+  @Test
+  public void test471622_WebXmlPropertyNoMarker() throws Exception {
+	setAutoBuilding(true);
+    IProject project = importProject("projects/471622/pom.xml");
+    waitForJobsToComplete();
+    assertNoErrors(project);
+  }
 }
