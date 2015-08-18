@@ -24,12 +24,13 @@
   <name>M2E-WTP-TESTS :: Parent</name>
 
   <properties>
-    <tycho-version>0.22.0</tycho-version>
+    <tycho-version>0.23.1</tycho-version>
     <test.timeout>2400</test.timeout><!--  45 mins -->
-    <tycho.test.jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
+    <tycho.test.jvmArgs>-server -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -noverify</tycho.test.jvmArgs>
     <eclipse.target>mars</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/snapshots/1.6.0/latest/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.6/</m2e-repo.url>
+    <m2e-wtp-repo.url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}/</m2e-wtp-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <mavenarchiver-repo.url>http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-mavenarchiver/0.17.0/N/0.17.0.201502101659/</mavenarchiver-repo.url>
   </properties>
@@ -77,7 +78,7 @@
     <repository>
       <id>m2e-wtp</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}/</url>
+      <url>${m2e-wtp-repo.url}</url>
     </repository>
     <repository>
       <id>orbit</id>
@@ -160,7 +161,7 @@
         </os>
       </activation>
       <properties>
-        <tycho.test.jvmArgs>-Xmx1024m -XX:MaxPermSize=512m -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
+        <tycho.test.jvmArgs>-server -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -noverify -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
         <osgi.ws>cocoa</osgi.ws>
       </properties>
       <build>
