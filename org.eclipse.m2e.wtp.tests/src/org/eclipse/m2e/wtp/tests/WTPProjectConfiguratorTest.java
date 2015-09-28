@@ -2598,4 +2598,11 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
     waitForJobsToComplete();
     assertNoErrors(project);
   }
+
+  @Test
+  public void test393895_webappDeployName() throws Exception {
+    IProject[] wars = importProjects("projects/393895/", new String[]{"p01/pom.xml", "p02/pom.xml"}, new ResolverConfiguration());
+    assertDeployName(wars[0], "warName.war");
+    assertDeployName(wars[1], "finalName.war");
+  }
 }

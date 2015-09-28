@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-
 import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -47,6 +45,7 @@ import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
 import org.eclipse.wst.common.componentcore.ComponentCore;
+import org.eclipse.wst.common.componentcore.internal.util.VirtualReferenceUtilities;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
@@ -56,6 +55,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.validation.ValidationFramework;
 import org.junit.BeforeClass;
 import org.osgi.framework.Version;
+
+import junit.framework.Assert;
 
 @SuppressWarnings("restriction")
 public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
@@ -373,5 +374,12 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 		  }
 	  }
 	  org.junit.Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
+  }
+  
+  protected static void assertDeployName(IProject project, String expectedDeployName) {
+	  IVirtualComponent component = ComponentCore.createComponent(project);
+	  assertNotNull(project.getName() +" is not a component project", component);
+	  String deployName = VirtualReferenceUtilities.INSTANCE.getDefaultProjectArchiveName(component);
+	  assertEquals(expectedDeployName, deployName);
   }
 }
