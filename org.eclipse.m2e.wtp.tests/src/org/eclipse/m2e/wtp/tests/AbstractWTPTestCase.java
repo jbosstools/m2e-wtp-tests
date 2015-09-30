@@ -62,7 +62,7 @@ import junit.framework.Assert;
 public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 
   protected static final IProjectFacetVersion DEFAULT_WEB_VERSION = WebFacetUtils.WEB_FACET.getVersion("2.5");
-  protected static final IProjectFacet EJB_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.EJB); 
+  protected static final IProjectFacet EJB_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.EJB);
   protected static final IProjectFacet UTILITY_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.UTILITY);
   protected static final IProjectFacetVersion UTILITY_10 = UTILITY_FACET.getVersion("1.0");
   protected static final IProjectFacet EAR_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION);
@@ -72,9 +72,9 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected static final String JRE_CONTAINER_J2SE_1_5 = "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5";
 
   protected static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
-  
+
   private long startTime;
-  
+
   static {
     String archiveNameAttribute = null;
     try {
@@ -85,7 +85,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     }
     CLASSPATH_ARCHIVENAME_ATTRIBUTE = archiveNameAttribute;
   }
-  
+
   protected static final boolean canRunJavaEe7Tests = checkJavaEe7Compatibility();
 
   protected static IClasspathContainer getWebLibClasspathContainer(IJavaProject project) throws JavaModelException {
@@ -99,12 +99,12 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     return null;
   }
 
-  
+
   @BeforeClass
   public static void beforeClass() {
 	  ValidationFramework.getDefault().suspendAllValidation(true);
   }
-  
+
     @Override
 	protected void setUp() throws Exception {
 		// TODO Auto-generated method stub
@@ -115,7 +115,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 		startTime = System.currentTimeMillis();
 	}
 
-  
+
     @Override
 	protected void tearDown() throws Exception {
 		long elapsed = System.currentTimeMillis() - startTime;
@@ -126,8 +126,8 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 		long e = System.currentTimeMillis() - s;
 		System.err.println("teardown took " + e  + " ms");
 	}
-  
-  
+
+
   private static boolean hasExtraAttribute(IClasspathEntry entry, String expectedAttribute) {
     for (IClasspathAttribute cpa : entry.getExtraAttributes()) {
       if (expectedAttribute.equals(cpa.getName())){
@@ -139,7 +139,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 
   protected String toString(IVirtualReference[] references) {
     StringBuilder sb = new StringBuilder("[");
-    
+
     String sep = "";
     for(IVirtualReference reference : references) {
       IVirtualComponent component = reference.getReferencedComponent();
@@ -148,26 +148,26 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
       sb.append(" " + component.getMetaProperties());
       sep = ", ";
     }
-    
+
     return sb.append(']').toString();
   }
 
   protected String toString(IFile[] files) {
     StringBuilder sb = new StringBuilder("[");
-    
+
     String sep = "";
     for(IFile file : files) {
       sb.append(sep).append(file.getFullPath());
       sep = ", ";
     }
-    
+
     return sb.append(']').toString();
   }
 
   protected void assertHasMarker(String expectedMessage, List<IMarker> markers) throws CoreException {
     Pattern p = Pattern.compile(expectedMessage);
     for (IMarker marker : markers) {
-      String markerMsg = marker.getAttribute(IMarker.MESSAGE).toString(); 
+      String markerMsg = marker.getAttribute(IMarker.MESSAGE).toString();
       if (p.matcher(markerMsg).find()) {
         return ;
       }
@@ -178,13 +178,13 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected void assertMissingMarker(String expectedMessage, List<IMarker> markers) throws CoreException {
     Pattern p = Pattern.compile(expectedMessage);
     for (IMarker marker : markers) {
-      String markerMsg = marker.getAttribute(IMarker.MESSAGE).toString(); 
+      String markerMsg = marker.getAttribute(IMarker.MESSAGE).toString();
       if (p.matcher(markerMsg).find()) {
         fail("[" + expectedMessage + "] was found but should be missing. Existing markers are :"+toString(markers)) ;
       }
     }
   }
-  
+
   protected void assertNotDeployable(IClasspathEntry entry) {
     assertDeployable(entry, false);
   }
@@ -217,7 +217,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
       ins = file.getContents();
       content = IOUtil.toString(ins, 1024).replaceAll("\r\n", "\n");
     } finally {
-      IOUtil.close(ins);   
+      IOUtil.close(ins);
     }
     return content;
   }
@@ -231,12 +231,12 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 	      ins = new FileInputStream(file);
 	      content = IOUtil.toString(ins, 1024).replaceAll("\r\n", "\n");
 	    } finally {
-	      IOUtil.close(ins);   
+	      IOUtil.close(ins);
 	    }
 	    return content;
 	  }
 
-  
+
   public AbstractWTPTestCase() {
     super();
   }
@@ -258,12 +258,12 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
    * @param waitTime
    * @throws Exception
    */
-  protected void updateProject(IProject project, String newPomName, int waitTime) throws Exception {    
-    
+  protected void updateProject(IProject project, String newPomName, int waitTime) throws Exception {
+
     if (newPomName != null) {
       copyContent(project, newPomName, "pom.xml");
     }
-    
+
     IProjectConfigurationManager configurationManager = MavenPlugin.getDefault().getProjectConfigurationManager();
     ResolverConfiguration configuration = new ResolverConfiguration();
     configurationManager.enableMavenNature(project, configuration, monitor);
@@ -276,30 +276,31 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
     }
     waitForJobsToComplete();
   }
-  protected void waitForJobsToComplete() throws InterruptedException, CoreException {
+  @Override
+protected void waitForJobsToComplete() throws InterruptedException, CoreException {
 	    waitForJobsToComplete(monitor);
   }
-  
+
   public static void waitForJobsToComplete(IProgressMonitor monitor) throws InterruptedException, CoreException {
 	  long s = System.currentTimeMillis();
 	  AbstractMavenProjectTestCase.waitForJobsToComplete(monitor);
 	  long e = System.currentTimeMillis() -s ;
 	  System.err.println("Waited for jobs to complete for " + e + " ms");
   }
-  
-  
-  protected void updateProject(IProject project) throws Exception {   
+
+
+  protected void updateProject(IProject project) throws Exception {
     updateProject(project, null, -1);
   }
-  
+
   protected void assertContains(String findMe, String holder) {
     assertTrue("'" +findMe + "' is missing from : \n" + holder, holder.contains(findMe));
   }
-  
+
   protected void assertNotContains(String findMe, String holder) {
     assertFalse("'" +findMe + "' was found in : \n" + holder, holder.contains(findMe));
   }
-  
+
 
   protected void useBuildDirforGeneratingFiles(IProject project, boolean b) {
     IMavenWtpPreferences preferences = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(project);
@@ -310,8 +311,8 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 
   protected void useBuildDirforGeneratingFiles(boolean b) {
     useBuildDirforGeneratingFiles(null, b);
-  }  
-  
+  }
+
   protected void checkForErrors(IProject project, String ... ignoredFiles ) throws CoreException {
 	   	List<IMarker> markers = findErrorMarkers(project);
 	   	if (ignoredFiles != null) {
@@ -329,7 +330,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 	   		Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
 	   	}
 	}
-  
+
   protected ConfiguratorEnabler getConfiguratorEnabler(String id) {
 		for ( ConfiguratorEnabler e : MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getConfiguratorEnablers()) {
 			if (e.getId().equals(id)) {
@@ -338,44 +339,46 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
 		}
 		fail("ConfiguratorEnabler "+ id + " not found");
 		return null;
-  }		
+  }
 
   private static boolean checkJavaEe7Compatibility() {
 	 String version = System.getProperty("java.specification.version");
 	 double javaVersion = Double.parseDouble(version);
 	 if (javaVersion  < 1.7) {
-		System.err.println("Can't run Java EE 7 tests with Java "+javaVersion);  
+		System.err.println("Can't run Java EE 7 tests with Java "+javaVersion);
 		return false;
 	 }
 	 Version j2eeVersion = Platform.getBundle("org.eclipse.jst.j2ee.web").getVersion();
 	 Version threshold = new Version(1, 1, 700);
 	 if (j2eeVersion == null || j2eeVersion.compareTo(threshold) < 0) {
-	    System.err.println("Can't run Java EE 7 tests with org.eclipse.jst.j2ee.web "+j2eeVersion.toString());  
+	    System.err.println("Can't run Java EE 7 tests with org.eclipse.jst.j2ee.web "+j2eeVersion.toString());
 	 	return false;
 	 }
 	 return true;
 	}
-  
+
   protected void assertArchiveNameAttribute(IClasspathEntry cpe, String expectedValue) {
   	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cpe, CLASSPATH_ARCHIVENAME_ATTRIBUTE);
   	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
   	assertEquals(expectedValue, archiveNameAttribute.getValue());
   }
-  
+
   protected static void assertNoErrors(IProject project) throws CoreException {
 	  List<IMarker> markers = findErrorMarkers(project);
-	  Iterator<IMarker> ite = markers.iterator(); 
+	  Iterator<IMarker> ite = markers.iterator();
 	  while (ite.hasNext()) {
 		  IMarker m = ite.next();
+		  String msg = m.getAttribute(IMarker.MESSAGE).toString();
 		  if ("org.eclipse.wst.xml.core.validationMarker".equals(m.getType())
-				  && m.getAttribute(IMarker.MESSAGE).toString().contains("Referenced file contains errors")
-				  ) {
+				  && (msg.contains("Referenced file contains errors")
+						  || msg.contains("Cannot find the declaration of element 'project'")
+				  )) {
 			  ite.remove();
 		  }
 	  }
 	  org.junit.Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
   }
-  
+
   protected static void assertDeployName(IProject project, String expectedDeployName) {
 	  IVirtualComponent component = ComponentCore.createComponent(project);
 	  assertNotNull(project.getName() +" is not a component project", component);
