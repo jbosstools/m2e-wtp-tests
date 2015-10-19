@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>EARNoContentNoTag</groupId>
-  <artifactId>EARNoContentNoTag</artifactId>
+  <groupId>480163</groupId>
+  <artifactId>480163</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>ear</packaging>
   <description>!!!EAR resources from the root directory need to be moved under src/main/application!!!</description>
@@ -11,8 +11,7 @@
         <artifactId>maven-ear-plugin</artifactId>
         <version>2.9</version>
         <configuration>
-          <version>6</version>
-          <defaultLibBundleDir>lib</defaultLibBundleDir>
+          <version>1.4</version>
         </configuration>
       </plugin>
     </plugins>
