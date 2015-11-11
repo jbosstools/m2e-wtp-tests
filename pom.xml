@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2008 Sonatype, Inc.
+  Copyright (c) 2008-2015 Sonatype, Inc. and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -24,12 +24,12 @@
   <name>M2E-WTP-TESTS :: Parent</name>
 
   <properties>
-    <tycho-version>0.23.1</tycho-version>
+    <tycho-version>0.24.0</tycho-version>
     <test.timeout>2400</test.timeout><!--  45 mins -->
-    <tycho.test.jvmArgs>-server -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -noverify</tycho.test.jvmArgs>
-    <eclipse.target>mars</eclipse.target>
+    <tycho.test.jvmArgs>-server -Xms1024m -Xmx1024m -noverify</tycho.test.jvmArgs>
+    <eclipse.target>neon</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.6/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/snapshots/1.7.0/latest/</m2e-repo.url>
     <m2e-wtp-repo.url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}/</m2e-wtp-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <mavenarchiver-repo.url>http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-mavenarchiver/0.17.0/N/0.17.0.201502101659/</mavenarchiver-repo.url>
@@ -85,29 +85,7 @@
       <layout>p2</layout>
       <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/</url>
     </repository>
-
-    <repository>
-      <id>RSO-public-group</id>
-      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>RSO-public-group</id>
-      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <plugins>
       <plugin>
@@ -161,7 +139,7 @@
         </os>
       </activation>
       <properties>
-        <tycho.test.jvmArgs>-server -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -noverify -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
+        <tycho.test.jvmArgs>-server -Xms1024m -Xmx1024m -noverify -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
         <osgi.ws>cocoa</osgi.ws>
       </properties>
       <build>
