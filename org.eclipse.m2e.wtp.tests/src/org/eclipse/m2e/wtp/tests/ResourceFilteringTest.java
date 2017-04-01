@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
@@ -400,6 +399,21 @@ public class ResourceFilteringTest extends AbstractWTPTestCase {
     assertTrue("File was filtered :"+jbossServiceRelative, jbossServiceRelative.contains(expectedAttribute));
   }
 
+  @Test
+  public void test514577_webXmlfilteringWithMavenWarUserProperty() throws Exception {
+    IProject web = importProject(
+        "projects/WebResourceFiltering/maven.war.filteringDeploymentDescriptors/pom.xml");
+    web.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
+    waitForJobsToComplete();
+    IFolder filteredFolder = web.getFolder(FILTERED_FOLDER_NAME);
+    assertTrue("Filtered folder doesn't exist", filteredFolder.exists());
+    // Check all the files are correctly filtered
+    IFile webXml = filteredFolder.getFile("WEB-INF/web.xml");
+    assertTrue(webXml.getName() + " is missing", webXml.exists());
+    String xml = getAsString(webXml);
+    assertFalse("${project.name} was not interpolated", xml.contains("${project.name}"));
+    assertFalse("${project.version} was not interpolated", xml.contains("${project.version}"));
+  }
   
   
   /**
