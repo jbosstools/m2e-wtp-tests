@@ -30,8 +30,9 @@
     <eclipse.target>oxygen</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.8/</m2e-repo.url>
-    <m2e-wtp-repo.url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}/</m2e-wtp-repo.url>
+    <m2e-wtp-repo.url>http://download.eclipse.org/m2e-wtp/snapshots/neon/</m2e-wtp-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
+    <wtp-repo.url>http://download.eclipse.org/webtools/downloads/drops/R3.9.0/S-3.9.0M7-20170516000202/repository</wtp-repo.url>
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.2/</mavenarchiver-repo.url>
   </properties>
 
@@ -79,6 +80,11 @@
       <id>m2e-wtp</id>
       <layout>p2</layout>
       <url>${m2e-wtp-repo.url}</url>
+    </repository>
+    <repository>
+      <id>wtp</id>
+      <layout>p2</layout>
+      <url>${wtp-repo.url}</url>
     </repository>
     <repository>
       <id>orbit</id>
