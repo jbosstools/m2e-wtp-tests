@@ -12,6 +12,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.wtp.common.tests.TestServerUtil;
 import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlaySelfComponent;
@@ -20,6 +21,8 @@ import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualComponent;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.model.IModuleResource;
 import org.junit.Test;
@@ -293,5 +296,35 @@ public class OverlayTest extends AbstractWTPTestCase {
       assertTrue("WEB-INF/lib/junit-4.10.jar is missing from "+ resources,resources.contains("WEB-INF/lib/junit-4.10.jar"));
       assertTrue("WEB-INF/lib/hamcrest-core-1.1.jar is missing from "+ resources,resources.contains("WEB-INF/lib/hamcrest-core-1.1.jar"));
       assertTrue("WEB-INF/classes/servlet/Constants.class is missing from "+ resources,resources.contains("WEB-INF/classes/servlet/Constants.class"));
+  }
+  
+  @Test
+  public void test521181_OverlayProvidedJar() throws Exception {
+	  setAutoBuilding(true);
+      IProject[] projects = importProjects("projects/overlays/521181",
+                              new String[]{"war/pom.xml", "jar/pom.xml"},
+                              new ResolverConfiguration()
+                            );
+      waitForJobsToComplete();
+      IProject war = projects[0];
+      war.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+      waitForJobsToComplete();
+      assertNoErrors(war);
+      
+      IProject jar = projects[1];
+      IFacetedProject fpJar = ProjectFacetsManager.create(jar, false, monitor);
+      assertNotNull(jar + " is not a faceted project", fpJar);
+      assertTrue(fpJar.hasProjectFacet(JavaFacet.FACET));
+      assertEquals(UTILITY_10, fpJar.getInstalledVersion(UTILITY_FACET));
+      
+      IVirtualComponent comp = ComponentCore.createComponent(war);
+      assertNotNull(comp);
+      
+      IServer server = TestServerUtil.createPreviewServer();
+      TestServerUtil.addProjectToServer(war, server);
+      
+      List<String> resources = TestServerUtil.toList(TestServerUtil.getServerModuleResources(war));
+      assertTrue("index.html is missing from "+ resources, resources.contains("index.html"));
+      assertFalse("WEB-INF/lib/jar-0.0.1-SNAPSHOT.jar should not be deployed",resources.contains("WEB-INF/lib/jar-0.0.1-SNAPSHOT.jar"));
   }
 }
