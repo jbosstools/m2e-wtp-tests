@@ -13,9 +13,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
@@ -364,18 +367,25 @@ protected void waitForJobsToComplete() throws InterruptedException, CoreExceptio
   }
 
   protected static void assertNoErrors(IProject project) throws CoreException {
-	  List<IMarker> markers = findErrorMarkers(project);
-	  Iterator<IMarker> ite = markers.iterator();
-	  while (ite.hasNext()) {
-		  IMarker m = ite.next();
-		  String msg = m.getAttribute(IMarker.MESSAGE).toString();
-		  if ("org.eclipse.wst.xml.core.validationMarker".equals(m.getType())
-				  && (msg.contains("Referenced file contains errors")
-						  || msg.contains("Cannot find the declaration of element 'project'")
-				  )) {
-			  ite.remove();
+	  assertNoErrors(project, "Referenced file contains errors", "Cannot find the declaration of element 'project'");
+  }
+  
+  protected static void assertNoErrors(IProject project, String... ignored) throws CoreException {
+	  List<IMarker> markers = findErrorMarkers(project).stream().filter(m -> {
+		  boolean included = true;
+		  if (ignored != null) {
+			try {
+				String msg = m.getAttribute(IMarker.MESSAGE).toString();
+				included = !Stream.of(ignored).filter(msg::contains).findAny().isPresent();
+				if (included) {
+					System.err.println(msg + " not in "+ ignored);
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		  }
-	  }
+		  return included;
+	  }).collect(Collectors.toList());
 	  org.junit.Assert.assertEquals("Unexpected error markers " + toString(markers), 0, markers.size());
   }
 

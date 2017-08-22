@@ -100,7 +100,7 @@ public abstract class AbstractWtpProjectConversionTestCase extends AbstractWTPTe
 		// Import existing regular Eclipse project
 		IProject project = createExisting(projectName, "projects/conversion/" + projectName);
 		assertTrue(projectName + " was not created!", project.exists());
-		assertNoErrors(project);
+		checkForErrors(project);
 
 		// Check project has proper conversion enabler configured
 		assertConversionEnabler(project, getPackagingUnderTest());

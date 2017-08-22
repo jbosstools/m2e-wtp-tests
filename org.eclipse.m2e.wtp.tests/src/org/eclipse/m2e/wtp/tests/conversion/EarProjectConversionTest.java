@@ -65,7 +65,6 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		testProjectConversion("EARNoContentNoTag");
 	}
 
-
 	@Test
 	public void testEar14WithoutContentFolderWithoutDefaultRootSourceTag() throws Exception {
 		// Checks an EAR 1.4 without a content folder, and without the attribute
@@ -88,9 +87,8 @@ public class EarProjectConversionTest extends AbstractWtpProjectConversionTestCa
 		testProjectConversion("weblo");
 	}
 
-	@Override
 	protected void checkForErrors(IProject project) throws CoreException {
-		super.checkForErrors(project, "application.xml");
+		assertNoErrors(project, "An internal error has occurred running validation on project");
 	}
 
 	@Override
