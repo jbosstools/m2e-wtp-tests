@@ -49,25 +49,17 @@ public class WebProjectConversionTest extends AbstractWtpProjectConversionTestCa
 	public void testWeb31ProjectConversion() throws Exception {
 		// Checks a servlet 3.1 project with standard Eclipse WebContent folder
 		// configures <warSourceDirectory> and sets <failOnMissingWebXml> to false
-		if (canRunJavaEe7Tests) {
-			IProject web = testProjectConversion("web31");
-			IFacetedProject fWeb = ProjectFacetsManager.create(web);
-			assertEquals("Unexpected web facet version;", "3.1", fWeb.getProjectFacetVersion(WebFacetUtils.WEB_FACET).getVersionString());
-		} else {
-			System.err.println("skipped testWeb31ProjectConversion()");
-		}
+		IProject web = testProjectConversion("web31");
+		IFacetedProject fWeb = ProjectFacetsManager.create(web);
+		assertEquals("Unexpected web facet version;", "3.1", fWeb.getProjectFacetVersion(WebFacetUtils.WEB_FACET).getVersionString());
 	}
 
 	@Test
 	public void testWeb31NoWebXmlProjectConversion() throws Exception {
 		// Checks a servlet 3.1 project without xml keeps its original facet after conversion
-		if (canRunJavaEe7Tests) {
-			IProject web = testProjectConversion("web31-nowebxml");
-			IFacetedProject fWeb = ProjectFacetsManager.create(web);
-			assertEquals("Unexpected web facet version;", "3.1", fWeb.getProjectFacetVersion(WebFacetUtils.WEB_FACET).getVersionString());
-		} else {
-			System.err.println("skipped testWeb31NoXmlProjectConversionNoWebXml()");
-		}
+		IProject web = testProjectConversion("web31-nowebxml");
+		IFacetedProject fWeb = ProjectFacetsManager.create(web);
+		assertEquals("Unexpected web facet version;", "3.1", fWeb.getProjectFacetVersion(WebFacetUtils.WEB_FACET).getVersionString());
 	}
 
 	@Test

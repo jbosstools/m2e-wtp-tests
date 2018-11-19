@@ -297,15 +297,11 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     assertEquals("foo.bar-core", cp[1].getPath().lastSegment());
     assertEquals("bar.foo-core", cp[2].getPath().lastSegment());
-    if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-      assertEquals("junit-junit-3.8.1.jar", cp[0].getPath().lastSegment());
-      assertEquals("commons-lang-commons-lang-2.4.jar", cp[3].getPath().lastSegment());
-    } else {
-      assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
-      assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
-      assertArchiveNameAttribute(cp[3], "commons-lang-commons-lang-2.4.jar");
-      assertEquals("commons-lang-2.4.jar", cp[3].getPath().lastSegment());
-    }
+    
+    assertArchiveNameAttribute(cp[0], "junit-junit-3.8.1.jar");
+    assertEquals("junit-3.8.1.jar", cp[0].getPath().lastSegment());
+    assertArchiveNameAttribute(cp[3], "commons-lang-commons-lang-2.4.jar");
+    assertEquals("commons-lang-2.4.jar", cp[3].getPath().lastSegment());
   }
 
   //@Test
@@ -2119,13 +2115,8 @@ public class WTPProjectConfiguratorTest extends AbstractWTPTestCase {
 
     assertEquals(1, cp.length);
 
-    String expectedPath;
-    if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-      expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar";
-    } else {
-      assertArchiveNameAttribute(cp[0], "MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar");
-      expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar";
-    }
+	assertArchiveNameAttribute(cp[0], "MNGECLIPSE-1045-DEP-0.0.1-20081109.182459-3.jar");
+	String expectedPath = "/localrepo/test/project/MNGECLIPSE-1045-DEP/0.0.1-SNAPSHOT/MNGECLIPSE-1045-DEP-0.0.1-SNAPSHOT.jar";
 
     String path = cp[0].getPath().toPortableString();
     assertTrue("Unexpected path : "+path, path.endsWith(expectedPath));

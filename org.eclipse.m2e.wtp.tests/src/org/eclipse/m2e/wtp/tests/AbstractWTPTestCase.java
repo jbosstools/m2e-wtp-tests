@@ -74,22 +74,7 @@ public abstract class AbstractWTPTestCase extends AbstractMavenProjectTestCase {
   protected static final String MAVEN_CLASSPATH_CONTAINER = "org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER";
   protected static final String JRE_CONTAINER_J2SE_1_5 = "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5";
 
-  protected static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
-
   private long startTime;
-
-  static {
-    String archiveNameAttribute = null;
-    try {
-      Field classpathArchiveNameField = IClasspathDependencyConstants.class.getField("CLASSPATH_ARCHIVENAME_ATTRIBUTE");
-      archiveNameAttribute = (String)classpathArchiveNameField.get(null);
-    } catch (Exception e) {
-      System.err.println("IClasspathDependencyConstants.CLASSPATH_ARCHIVENAME_ATTRIBUTE not available");
-    }
-    CLASSPATH_ARCHIVENAME_ATTRIBUTE = archiveNameAttribute;
-  }
-
-  protected static final boolean canRunJavaEe7Tests = checkJavaEe7Compatibility();
 
   protected static IClasspathContainer getWebLibClasspathContainer(IJavaProject project) throws JavaModelException {
     IClasspathEntry[] entries = project.getRawClasspath();
@@ -344,25 +329,9 @@ protected void waitForJobsToComplete() throws InterruptedException, CoreExceptio
 		return null;
   }
 
-  private static boolean checkJavaEe7Compatibility() {
-	 String version = System.getProperty("java.specification.version");
-	 double javaVersion = Double.parseDouble(version);
-	 if (javaVersion  < 1.7) {
-		System.err.println("Can't run Java EE 7 tests with Java "+javaVersion);
-		return false;
-	 }
-	 Version j2eeVersion = Platform.getBundle("org.eclipse.jst.j2ee.web").getVersion();
-	 Version threshold = new Version(1, 1, 700);
-	 if (j2eeVersion == null || j2eeVersion.compareTo(threshold) < 0) {
-	    System.err.println("Can't run Java EE 7 tests with org.eclipse.jst.j2ee.web "+j2eeVersion.toString());
-	 	return false;
-	 }
-	 return true;
-	}
-
   protected void assertArchiveNameAttribute(IClasspathEntry cpe, String expectedValue) {
-  	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cpe, CLASSPATH_ARCHIVENAME_ATTRIBUTE);
-  	assertNotNull(CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
+  	IClasspathAttribute archiveNameAttribute = ClasspathHelpers.getClasspathAttribute(cpe, IClasspathDependencyConstants.CLASSPATH_ARCHIVENAME_ATTRIBUTE);
+  	assertNotNull(IClasspathDependencyConstants.CLASSPATH_ARCHIVENAME_ATTRIBUTE+" is missing", archiveNameAttribute);
   	assertEquals(expectedValue, archiveNameAttribute.getValue());
   }
 
